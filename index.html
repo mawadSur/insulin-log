@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0d1117">
+<title>Insulin Log</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Spline+Sans+Mono:wght@400;500;600&display=swap');
+
+  :root{
+    --bg:#0c1116;
+    --panel:#141b22;
+    --panel-2:#1a232c;
+    --line:#26323d;
+    --ink:#e8eef3;
+    --ink-dim:#8595a3;
+    --ink-faint:#5a6875;
+    --accent:#5ee0b0;
+    --accent-deep:#2bb98a;
+    --warn:#ffb454;
+    --danger:#ff6b6b;
+    --shadow:0 12px 40px rgba(0,0,0,.45);
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  html,body{background:var(--bg);color:var(--ink);font-family:'Spline Sans Mono',monospace;}
+  body{
+    min-height:100vh;
+    background:
+      radial-gradient(1200px 600px at 90% -10%, rgba(94,224,176,.08), transparent 60%),
+      radial-gradient(900px 500px at -10% 110%, rgba(43,185,138,.06), transparent 55%),
+      var(--bg);
+    padding:0 0 64px;
+  }
+  .wrap{max-width:520px;margin:0 auto;padding:0 18px;}
+
+  header{
+    padding:30px 0 22px;
+    border-bottom:1px solid var(--line);
+    margin-bottom:22px;
+  }
+  .eyebrow{
+    font-size:11px;letter-spacing:.28em;text-transform:uppercase;
+    color:var(--accent);font-weight:600;
+  }
+  h1{
+    font-family:'Fraunces',serif;font-weight:600;
+    font-size:34px;line-height:1.05;margin-top:8px;letter-spacing:-.01em;
+  }
+  h1 em{font-style:italic;color:var(--accent);}
+  .sub{color:var(--ink-dim);font-size:12.5px;margin-top:10px;line-height:1.5;}
+
+  .disclaimer{
+    margin-top:16px;border:1px solid rgba(255,180,84,.32);
+    background:rgba(255,180,84,.06);border-radius:12px;padding:12px 14px;
+    font-size:11.5px;line-height:1.55;color:#f4d9a8;
+  }
+  .disclaimer b{color:var(--warn);}
+
+  .tabs{display:flex;gap:6px;margin-bottom:18px;background:var(--panel);
+    border:1px solid var(--line);border-radius:14px;padding:5px;}
+  .tab{flex:1;text-align:center;padding:10px 4px;border-radius:10px;
+    font-size:12.5px;font-weight:500;color:var(--ink-dim);cursor:pointer;
+    transition:.18s;border:none;background:none;font-family:inherit;}
+  .tab.active{background:var(--accent);color:#06231a;font-weight:600;}
+
+  .card{
+    background:var(--panel);border:1px solid var(--line);border-radius:18px;
+    padding:20px 18px;margin-bottom:16px;box-shadow:var(--shadow);
+  }
+  .card h2{font-family:'Fraunces',serif;font-weight:600;font-size:19px;margin-bottom:4px;}
+  .card .hint{font-size:11.5px;color:var(--ink-faint);margin-bottom:16px;line-height:1.5;}
+
+  .field{margin-bottom:14px;}
+  .field:last-child{margin-bottom:0;}
+  label{display:block;font-size:11.5px;color:var(--ink-dim);margin-bottom:7px;
+    letter-spacing:.02em;}
+  label .req{color:var(--accent);}
+  .inputrow{display:flex;align-items:stretch;gap:0;}
+  input[type=number],input[type=text],select{
+    width:100%;background:var(--panel-2);border:1px solid var(--line);
+    color:var(--ink);font-family:inherit;font-size:16px;padding:13px 14px;
+    border-radius:11px;outline:none;transition:.15s;
+  }
+  input:focus,select:focus{border-color:var(--accent);background:#16222b;}
+  .inputrow input{border-top-right-radius:0;border-bottom-right-radius:0;}
+  .unit{display:flex;align-items:center;padding:0 14px;background:var(--panel-2);
+    border:1px solid var(--line);border-left:none;border-radius:0 11px 11px 0;
+    font-size:12px;color:var(--ink-faint);white-space:nowrap;min-width:64px;justify-content:center;}
+
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+
+  .btn{width:100%;padding:15px;border:none;border-radius:13px;font-family:inherit;
+    font-size:14px;font-weight:600;cursor:pointer;transition:.18s;margin-top:4px;}
+  .btn-primary{background:var(--accent);color:#06231a;}
+  .btn-primary:active{transform:scale(.985);background:var(--accent-deep);}
+  .btn-ghost{background:transparent;color:var(--ink-dim);border:1px solid var(--line);}
+
+  .result{margin-top:18px;border-radius:14px;overflow:hidden;border:1px solid var(--line);
+    display:none;}
+  .result.show{display:block;animation:rise .3s ease;}
+  @keyframes rise{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+  .result-top{background:linear-gradient(135deg,#16302a,#11241f);padding:20px;text-align:center;}
+  .result-label{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);}
+  .result-num{font-family:'Fraunces',serif;font-size:52px;font-weight:700;line-height:1;margin:8px 0 2px;}
+  .result-num small{font-size:18px;color:var(--ink-dim);font-weight:400;font-family:'Spline Sans Mono';}
+  .result-type{font-size:12px;color:var(--ink-dim);}
+  .breakdown{background:var(--panel-2);padding:14px 18px;}
+  .brk-row{display:flex;justify-content:space-between;font-size:12.5px;padding:6px 0;
+    border-bottom:1px dashed var(--line);}
+  .brk-row:last-child{border:none;}
+  .brk-row .v{color:var(--ink);font-weight:500;}
+  .brk-row.total{font-weight:600;color:var(--accent);padding-top:10px;}
+  .brk-row.neg .v{color:var(--warn);}
+  .result-note{padding:12px 18px;font-size:11px;color:var(--ink-faint);line-height:1.55;
+    background:var(--panel-2);border-top:1px solid var(--line);}
+
+  .low-warn{background:rgba(255,107,107,.1);border-top:1px solid rgba(255,107,107,.3);
+    padding:12px 18px;font-size:12px;color:#ffb3b3;line-height:1.5;}
+
+  /* log */
+  .logitem{background:var(--panel-2);border:1px solid var(--line);border-radius:12px;
+    padding:13px 15px;margin-bottom:10px;}
+  .logitem .lt{display:flex;justify-content:space-between;align-items:baseline;}
+  .logitem .dose{font-family:'Fraunces',serif;font-size:22px;font-weight:600;color:var(--accent);}
+  .logitem .time{font-size:11px;color:var(--ink-faint);}
+  .logitem .meta{font-size:11.5px;color:var(--ink-dim);margin-top:5px;line-height:1.5;}
+  .empty{text-align:center;color:var(--ink-faint);font-size:12.5px;padding:30px 10px;line-height:1.6;}
+  .clearlog{font-size:11px;color:var(--ink-faint);text-align:center;margin-top:8px;
+    cursor:pointer;text-decoration:underline;}
+
+  .settings-saved{font-size:11.5px;color:var(--accent);text-align:center;margin-top:10px;
+    opacity:0;transition:.3s;}
+  .settings-saved.show{opacity:1;}
+
+  footer{text-align:center;font-size:10.5px;color:var(--ink-faint);margin-top:24px;line-height:1.6;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Personal Tracker</div>
+    <h1>Insulin <em>Log</em></h1>
+    <p class="sub">A transparent calculator for the dosing parameters <b>your clinician prescribed</b>. It does the arithmetic — it does not decide your numbers.</p>
+    <div class="disclaimer">
+      <b>⚠ Not medical advice.</b> This tool only performs math using values you enter from your own treatment plan. Always confirm doses with your healthcare provider. Insulin errors can be life-threatening — never act on an estimate you're unsure about.
+    </div>
+  </header>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="calc">Calculate</button>
+    <button class="tab" data-tab="log">Log</button>
+    <button class="tab" data-tab="settings">Settings</button>
+  </div>
+
+  <!-- CALC -->
+  <section id="calc">
+    <div class="card">
+      <h2>Estimate a dose</h2>
+      <p class="hint">Fill what applies. Carb coverage and high-BG correction are added together, then insulin still active in your body (IOB) is subtracted.</p>
+
+      <div class="field">
+        <label>Carbs to eat <span style="color:var(--ink-faint)">(optional)</span></label>
+        <div class="inputrow">
+          <input type="number" id="carbs" inputmode="decimal" placeholder="e.g. 45">
+          <span class="unit" id="u-carb">g</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Current blood glucose <span style="color:var(--ink-faint)">(optional)</span></label>
+        <div class="inputrow">
+          <input type="number" id="bg" inputmode="decimal" placeholder="e.g. 180">
+          <span class="unit" id="u-bg">mg/dL</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Active insulin on board (IOB) <span style="color:var(--ink-faint)">(optional)</span></label>
+        <div class="inputrow">
+          <input type="number" id="iob" inputmode="decimal" placeholder="e.g. 1.5">
+          <span class="unit">units</span>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" id="calcBtn">Calculate estimate</button>
+
+      <div class="result" id="result">
+        <div class="result-top">
+          <div class="result-label">Estimated dose</div>
+          <div class="result-num"><span id="rNum">0</span><small> units</small></div>
+          <div class="result-type" id="rType">—</div>
+        </div>
+        <div class="breakdown" id="breakdown"></div>
+        <div class="low-warn" id="lowWarn" style="display:none"></div>
+        <div class="result-note">Rounded to your configured increment. This is arithmetic only — verify before dosing.</div>
+      </div>
+      <button class="btn btn-ghost" id="logBtn" style="display:none;margin-top:12px;">Save to log ↓</button>
+    </div>
+  </section>
+
+  <!-- LOG -->
+  <section id="log" style="display:none">
+    <div class="card">
+      <h2>Dose history</h2>
+      <p class="hint">Saved locally on this device only. Share with your care team as a record.</p>
+      <div id="logList"><div class="empty">No entries yet.<br>Calculate an estimate and save it here.</div></div>
+      <div class="clearlog" id="clearLog" style="display:none">Clear all entries</div>
+    </div>
+  </section>
+
+  <!-- SETTINGS -->
+  <section id="settings" style="display:none">
+    <div class="card">
+      <h2>Your parameters</h2>
+      <p class="hint">Enter the values <b>from your prescription</b>. These are the only numbers that drive the math — get them from your provider, not guesses.</p>
+
+      <div class="field">
+        <label>Glucose units</label>
+        <select id="bgUnit">
+          <option value="mgdl">mg/dL (US)</option>
+          <option value="mmol">mmol/L</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Insulin-to-carb ratio (ICR) <span class="req">— 1 unit per __ g carbs</span></label>
+        <div class="inputrow">
+          <input type="number" id="sICR" inputmode="decimal" placeholder="e.g. 10">
+          <span class="unit">g/unit</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Correction factor / ISF <span class="req">— 1 unit lowers BG by __</span></label>
+        <div class="inputrow">
+          <input type="number" id="sISF" inputmode="decimal" placeholder="e.g. 50">
+          <span class="unit" id="u-isf">mg/dL</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Target blood glucose</label>
+        <div class="inputrow">
+          <input type="number" id="sTarget" inputmode="decimal" placeholder="e.g. 110">
+          <span class="unit" id="u-tgt">mg/dL</span>
+        </div>
+      </div>
+
+      <div class="two">
+        <div class="field">
+          <label>Insulin type / name</label>
+          <input type="text" id="sType" placeholder="e.g. Humalog">
+        </div>
+        <div class="field">
+          <label>Round to</label>
+          <select id="sRound">
+            <option value="0.5">0.5 unit</option>
+            <option value="1">1 unit</option>
+            <option value="0.1">0.1 unit</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Only correct above this BG <span style="color:var(--ink-faint)">(optional)</span></label>
+        <div class="inputrow">
+          <input type="number" id="sCorrThresh" inputmode="decimal" placeholder="e.g. 150">
+          <span class="unit" id="u-ct">mg/dL</span>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" id="saveSettings">Save parameters</button>
+      <div class="settings-saved" id="savedMsg">✓ Saved on this device</div>
+    </div>
+  </section>
+
+  <footer>
+    Data stays in this browser only. Nothing is uploaded.<br>
+    Built as a personal logging aid — not a medical device.
+  </footer>
+</div>
+
+<script>
+(function(){
+  // ---- state (in-memory; persists for the session) ----
+  var S = {
+    bgUnit:'mgdl', icr:null, isf:null, target:null,
+    type:'', round:0.5, corrThresh:null
+  };
+  var logEntries = [];
+  var lastCalc = null;
+
+  var $ = function(id){return document.getElementById(id);};
+
+  // ---- tabs ----
+  var tabs = document.querySelectorAll('.tab');
+  var secs = {calc:$('calc'), log:$('log'), settings:$('settings')};
+  tabs.forEach(function(t){
+    t.addEventListener('click', function(){
+      tabs.forEach(function(x){x.classList.remove('active');});
+      t.classList.add('active');
+      for(var k in secs){ secs[k].style.display = (k===t.dataset.tab)?'block':'none'; }
+    });
+  });
+
+  // ---- unit labels ----
+  function unitStr(){ return S.bgUnit==='mmol' ? 'mmol/L' : 'mg/dL'; }
+  function refreshUnits(){
+    var u = unitStr();
+    ['u-bg','u-isf','u-tgt','u-ct'].forEach(function(id){ if($(id)) $(id).textContent = u; });
+  }
+
+  // ---- settings ----
+  function loadSettingsToForm(){
+    $('bgUnit').value = S.bgUnit;
+    $('sICR').value = S.icr ?? '';
+    $('sISF').value = S.isf ?? '';
+    $('sTarget').value = S.target ?? '';
+    $('sType').value = S.type ?? '';
+    $('sRound').value = String(S.round);
+    $('sCorrThresh').value = S.corrThresh ?? '';
+    refreshUnits();
+  }
+  $('bgUnit').addEventListener('change', function(){ S.bgUnit=this.value; refreshUnits(); });
+
+  $('saveSettings').addEventListener('click', function(){
+    S.bgUnit = $('bgUnit').value;
+    S.icr = parseFloat($('sICR').value) || null;
+    S.isf = parseFloat($('sISF').value) || null;
+    S.target = parseFloat($('sTarget').value);
+    if(isNaN(S.target)) S.target = null;
+    S.type = $('sType').value.trim();
+    S.round = parseFloat($('sRound').value) || 0.5;
+    S.corrThresh = parseFloat($('sCorrThresh').value);
+    if(isNaN(S.corrThresh)) S.corrThresh = null;
+    refreshUnits();
+    var m = $('savedMsg'); m.classList.add('show');
+    setTimeout(function(){ m.classList.remove('show'); }, 1800);
+  });
+
+  // ---- rounding ----
+  function roundDose(d){
+    var step = S.round;
+    var r = Math.round(d/step)*step;
+    // tidy float
+    return Math.round(r*100)/100;
+  }
+
+  // ---- calculate ----
+  $('calcBtn').addEventListener('click', function(){
+    var carbs = parseFloat($('carbs').value);
+    var bg = parseFloat($('bg').value);
+    var iob = parseFloat($('iob').value);
+    if(isNaN(carbs)) carbs = null;
+    if(isNaN(bg)) bg = null;
+    if(isNaN(iob)) iob = 0;
+
+    if(carbs===null && bg===null){
+      alert('Enter carbs, a blood glucose reading, or both.');
+      return;
+    }
+
+    var rows = [];
+    var carbDose = 0, corrDose = 0;
+    var missing = [];
+
+    // carb coverage
+    if(carbs!==null){
+      if(!S.icr){ missing.push('insulin-to-carb ratio'); }
+      else {
+        carbDose = carbs / S.icr;
+        rows.push({label:'Carb coverage ('+carbs+'g ÷ '+S.icr+')', v:'+'+carbDose.toFixed(2)+' u'});
+      }
+    }
+
+    // correction
+    if(bg!==null){
+      if(S.target===null){ missing.push('target BG'); }
+      else if(!S.isf){ missing.push('correction factor'); }
+      else {
+        var doCorrect = true;
+        if(S.corrThresh!==null && bg < S.corrThresh){ doCorrect = false; }
+        if(doCorrect){
+          corrDose = (bg - S.target) / S.isf;
+          rows.push({label:'Correction (('+bg+' − '+S.target+') ÷ '+S.isf+')', v:(corrDose>=0?'+':'')+corrDose.toFixed(2)+' u'});
+        } else {
+          rows.push({label:'Correction (BG below '+S.corrThresh+' threshold)', v:'+0.00 u'});
+        }
+      }
+    }
+
+    if(missing.length){
+      alert('Set your '+missing.join(' and ')+' in Settings first.');
+      tabs.forEach(function(x){x.classList.remove('active');});
+      document.querySelector('[data-tab=settings]').classList.add('active');
+      for(var k in secs){ secs[k].style.display = (k==='settings')?'block':'none'; }
+      return;
+    }
+
+    var subtotal = carbDose + corrDose;
+    var iobApplied = Math.min(iob, Math.max(subtotal,0)); // don't subtract below sensible floor on display
+    if(iob>0){
+      rows.push({label:'Insulin on board', v:'−'+iob.toFixed(2)+' u', neg:true});
+    }
+
+    var raw = subtotal - iob;
+    var dose = roundDose(raw);
+    if(dose < 0) dose = 0;
+
+    // render breakdown
+    var html = '';
+    rows.forEach(function(r){
+      html += '<div class="brk-row '+(r.neg?'neg':'')+'"><span>'+r.label+'</span><span class="v">'+r.v+'</span></div>';
+    });
+    html += '<div class="brk-row total"><span>Estimated total</span><span class="v">'+dose.toFixed(2)+' u</span></div>';
+    $('breakdown').innerHTML = html;
+
+    $('rNum').textContent = dose.toFixed(dose%1===0?0:2);
+    $('rType').textContent = S.type ? S.type : 'insulin';
+    $('result').classList.add('show');
+    $('logBtn').style.display = 'block';
+
+    // low / negative warnings
+    var lw = $('lowWarn');
+    var warnMsgs = [];
+    if(bg!==null && S.target!==null && bg < S.target){
+      warnMsgs.push('Your BG ('+bg+') is below target. A correction here is negative — double-check whether you should be dosing at all.');
+    }
+    if(raw < 0){
+      warnMsgs.push('Active insulin exceeds the calculated need. Estimate floored at 0 — consult your plan before taking anything.');
+    }
+    if(warnMsgs.length){
+      lw.innerHTML = '⚠ '+warnMsgs.join('<br><br>⚠ ');
+      lw.style.display='block';
+    } else { lw.style.display='none'; }
+
+    lastCalc = {
+      dose:dose, type:S.type||'insulin', carbs:carbs, bg:bg, iob:iob,
+      bgUnit:unitStr(),
+      ts:new Date()
+    };
+  });
+
+  // ---- log ----
+  function renderLog(){
+    var list = $('logList');
+    if(!logEntries.length){
+      list.innerHTML = '<div class="empty">No entries yet.<br>Calculate an estimate and save it here.</div>';
+      $('clearLog').style.display='none';
+      return;
+    }
+    var html = '';
+    logEntries.slice().reverse().forEach(function(e){
+      var parts = [];
+      if(e.carbs!==null) parts.push(e.carbs+'g carbs');
+      if(e.bg!==null) parts.push('BG '+e.bg+' '+e.bgUnit);
+      if(e.iob>0) parts.push('IOB '+e.iob+'u');
+      var t = e.ts;
+      var time = t.toLocaleString([], {month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+      html += '<div class="logitem"><div class="lt"><span class="dose">'+e.dose.toFixed(e.dose%1===0?0:2)+' u</span><span class="time">'+time+'</span></div>'
+            + '<div class="meta">'+e.type+(parts.length?' · '+parts.join(' · '):'')+'</div></div>';
+    });
+    list.innerHTML = html;
+    $('clearLog').style.display='block';
+  }
+  $('logBtn').addEventListener('click', function(){
+    if(!lastCalc) return;
+    logEntries.push(lastCalc);
+    lastCalc = null;
+    renderLog();
+    // jump to log
+    tabs.forEach(function(x){x.classList.remove('active');});
+    document.querySelector('[data-tab=log]').classList.add('active');
+    for(var k in secs){ secs[k].style.display = (k==='log')?'block':'none'; }
+    $('logBtn').style.display='none';
+    $('result').classList.remove('show');
+    $('carbs').value=''; $('bg').value=''; $('iob').value='';
+  });
+  $('clearLog').addEventListener('click', function(){
+    if(confirm('Delete all log entries?')){ logEntries=[]; renderLog(); }
+  });
+
+  // init
+  loadSettingsToForm();
+  refreshUnits();
+  renderLog();
+})();
+</script>
+</body>
+</html>
