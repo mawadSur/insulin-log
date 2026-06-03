@@ -1,6 +1,8 @@
 # سجلّ الإنسولين · Insulin Log
 
-An Arabic (RTL) insulin dose **calculator and logger** with optional **AI food-photo carb estimation**. It does the arithmetic for the dosing parameters *your clinician prescribed* — it does not decide your numbers.
+A bilingual (**العربية / English**, RTL+LTR) insulin dose **calculator and logger** with optional **AI food-photo carb estimation**. It does the arithmetic for the dosing parameters *your clinician prescribed* — it does not decide your numbers.
+
+Use the header toggle to switch language; the whole UI (including the dose breakdown, log, and AI messages) re-renders, layout direction flips between RTL and LTR, and your choice is remembered on the device. Arabic is the default.
 
 > ⚠️ **ليست نصيحة طبية / Not medical advice.** This tool only performs math using values you enter from your own treatment plan, plus an optional, approximate AI carb estimate you must verify. Always confirm doses with your healthcare provider. Insulin errors can be life-threatening — never act on an estimate you're unsure about.
 

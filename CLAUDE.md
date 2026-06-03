@@ -1,8 +1,15 @@
 # Insulin Log — Project Notes
 
 ## What this is
-An Arabic (RTL) insulin dose **calculator + logger** with optional **AI food-photo carb estimation**.
-- `index.html` — the entire client app (HTML + CSS + vanilla JS, no build step). `dir="rtl" lang="ar"`, fonts Cairo + IBM Plex Sans Arabic via `@import`.
+A bilingual (Arabic RTL / English LTR) insulin dose **calculator + logger** with optional **AI food-photo carb estimation**.
+- `index.html` — the entire client app (HTML + CSS + vanilla JS, no build step). Default `dir="rtl" lang="ar"`; fonts Cairo + IBM Plex Sans Arabic (Arabic) and Inter (English) via `@import`.
+
+## i18n (language toggle)
+- All UI strings live in the `T = {ar:{...}, en:{...}}` dictionary in the inline script. `t(key, params)` looks up the current `LANG` with `{param}` interpolation; missing keys fall back to Arabic then the key itself.
+- Static text uses `data-i18n` (textContent), `data-i18n-html` (innerHTML, for strings with `<b>`/`<span>`), `data-i18n-ph` (placeholder), `data-i18n-alt` (alt). `applyStaticI18n()` walks these.
+- `applyLang(lang)` sets `LANG`, persists to `localStorage.insulinLang`, flips `documentElement.dir`/`lang`, swaps fonts (CSS `html[lang=en]`), and **re-renders dynamic surfaces**: `renderAiEst()`, `renderResultPanel()` (from `lastResult`), `renderLog()`. When adding dynamic strings, route them through `t()` and make sure the surface is re-rendered on switch.
+- `lastResult` holds the structured calc inputs (not pre-formatted text) so the result panel can re-render in either language. `lastAi` holds the AI estimate/error state for the same reason. Do not bake language into stored state.
+- `/api/estimate` takes a `lang` param ('ar'|'en') and returns food `items` in that language (`systemPrompt(lang)` + user text).
 - `api/estimate.js` — Vercel serverless function: Claude vision → `{grams, confidence, items}`.
 - Deployed on **Vercel** (static page + function). Also pushed to GitHub; GitHub Pages serves only the static page (the AI estimate needs the serverless endpoint, so Pages can't do estimation).
 
