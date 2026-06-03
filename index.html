@@ -7,7 +7,7 @@
 <meta name="theme-color" content="#0d1117">
 <title>سجلّ الإنسولين</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap');
 
   :root{
     --bg:#0c1116;
@@ -22,10 +22,16 @@
     --warn:#ffb454;
     --danger:#ff6b6b;
     --shadow:0 12px 40px rgba(0,0,0,.45);
+    --font-body:'IBM Plex Sans Arabic',sans-serif;
+    --font-display:'Cairo',sans-serif;
+  }
+  html[lang=en]{
+    --font-body:'Inter','IBM Plex Sans Arabic',sans-serif;
+    --font-display:'Inter','Cairo',sans-serif;
   }
 
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-  html,body{background:var(--bg);color:var(--ink);font-family:'IBM Plex Sans Arabic',sans-serif;}
+  html,body{background:var(--bg);color:var(--ink);font-family:var(--font-body);}
   body{
     min-height:100vh;
     background:
@@ -37,16 +43,23 @@
   .wrap{max-width:520px;margin:0 auto;padding:0 18px;}
 
   header{
-    padding:30px 0 22px;
+    padding:18px 0 22px;
     border-bottom:1px solid var(--line);
     margin-bottom:22px;
   }
+  .langbar{display:flex;justify-content:flex-end;margin-bottom:14px;}
+  .langtoggle{display:inline-flex;gap:3px;background:var(--panel);border:1px solid var(--line);
+    border-radius:10px;padding:3px;}
+  .lang-btn{border:none;background:none;color:var(--ink-dim);font-family:var(--font-body);
+    font-size:12px;font-weight:600;padding:6px 13px;border-radius:7px;cursor:pointer;transition:.15s;}
+  .lang-btn.active{background:var(--accent);color:#06231a;}
+
   .eyebrow{
     font-size:12px;
     color:var(--accent);font-weight:600;
   }
   h1{
-    font-family:'Cairo',sans-serif;font-weight:700;
+    font-family:var(--font-display);font-weight:700;
     font-size:34px;line-height:1.15;margin-top:8px;
   }
   h1 em{font-style:normal;color:var(--accent);}
@@ -70,7 +83,7 @@
     background:var(--panel);border:1px solid var(--line);border-radius:18px;
     padding:20px 18px;margin-bottom:16px;box-shadow:var(--shadow);
   }
-  .card h2{font-family:'Cairo',sans-serif;font-weight:700;font-size:20px;margin-bottom:4px;}
+  .card h2{font-family:var(--font-display);font-weight:700;font-size:20px;margin-bottom:4px;}
   .card .hint{font-size:12px;color:var(--ink-faint);margin-bottom:16px;line-height:1.7;}
 
   .field{margin-bottom:14px;}
@@ -144,8 +157,8 @@
   @keyframes rise{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
   .result-top{background:linear-gradient(135deg,#16302a,#11241f);padding:20px;text-align:center;}
   .result-label{font-size:12px;color:var(--accent);}
-  .result-num{font-family:'Cairo',sans-serif;font-size:52px;font-weight:700;line-height:1;margin:8px 0 2px;direction:ltr;}
-  .result-num small{font-size:18px;color:var(--ink-dim);font-weight:400;font-family:'IBM Plex Sans Arabic';}
+  .result-num{font-family:var(--font-display);font-size:52px;font-weight:700;line-height:1;margin:8px 0 2px;direction:ltr;}
+  .result-num small{font-size:18px;color:var(--ink-dim);font-weight:400;font-family:var(--font-body);}
   .result-type{font-size:12.5px;color:var(--ink-dim);}
   .breakdown{background:var(--panel-2);padding:14px 18px;}
   .brk-row{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;padding:6px 0;
@@ -164,7 +177,7 @@
   .logitem{background:var(--panel-2);border:1px solid var(--line);border-radius:12px;
     padding:13px 15px;margin-bottom:10px;}
   .logitem .lt{display:flex;justify-content:space-between;align-items:baseline;gap:10px;}
-  .logitem .dose{font-family:'Cairo',sans-serif;font-size:22px;font-weight:600;color:var(--accent);direction:ltr;}
+  .logitem .dose{font-family:var(--font-display);font-size:22px;font-weight:600;color:var(--accent);direction:ltr;}
   .logitem .time{font-size:11px;color:var(--ink-faint);}
   .logitem .meta{font-size:12px;color:var(--ink-dim);margin-top:5px;line-height:1.6;}
   .logitem .thumb{width:100%;max-height:160px;object-fit:cover;border-radius:9px;
@@ -183,168 +196,174 @@
 <body>
 <div class="wrap">
   <header>
-    <div class="eyebrow">متتبّع شخصي</div>
-    <h1>سجلّ <em>الإنسولين</em></h1>
-    <p class="sub">حاسبة شفّافة لمعاملات الجرعات التي <b>وصفها طبيبك</b>. تؤدّي العمليات الحسابية فقط — ولا تقرّر أرقامك.</p>
-    <div class="disclaimer">
+    <div class="langbar">
+      <div class="langtoggle">
+        <button type="button" class="lang-btn" data-lang="ar">العربية</button>
+        <button type="button" class="lang-btn" data-lang="en">English</button>
+      </div>
+    </div>
+    <div class="eyebrow" data-i18n="eyebrow">متتبّع شخصي</div>
+    <h1 data-i18n-html="h1">سجلّ <em>الإنسولين</em></h1>
+    <p class="sub" data-i18n-html="sub">حاسبة شفّافة لمعاملات الجرعات التي <b>وصفها طبيبك</b>. تؤدّي العمليات الحسابية فقط — ولا تقرّر أرقامك.</p>
+    <div class="disclaimer" data-i18n-html="disclaimer">
       <b>⚠ ليست نصيحة طبية.</b> تؤدّي هذه الأداة عمليات حسابية فقط باستخدام القيم التي تُدخلها من خطة علاجك. تحقّق دائمًا من الجرعات مع مقدّم الرعاية الصحية. أخطاء الإنسولين قد تكون مهدِّدة للحياة — لا تتصرّف أبدًا بناءً على تقدير لست متأكّدًا منه.
     </div>
   </header>
 
   <div class="tabs">
-    <button class="tab active" data-tab="calc">احسب</button>
-    <button class="tab" data-tab="log">السجلّ</button>
-    <button class="tab" data-tab="settings">الإعدادات</button>
+    <button class="tab active" data-tab="calc" data-i18n="tab.calc">احسب</button>
+    <button class="tab" data-tab="log" data-i18n="tab.log">السجلّ</button>
+    <button class="tab" data-tab="settings" data-i18n="tab.settings">الإعدادات</button>
   </div>
 
   <!-- CALC -->
   <section id="calc">
     <div class="card">
-      <h2>تقدير الجرعة</h2>
-      <p class="hint">املأ ما ينطبق. تُجمَع تغطية الكربوهيدرات وتصحيح ارتفاع السكر معًا، ثم يُطرَح الإنسولين النشط في جسمك (IOB).</p>
+      <h2 data-i18n="calc.title">تقدير الجرعة</h2>
+      <p class="hint" data-i18n="calc.hint">املأ ما ينطبق. تُجمَع تغطية الكربوهيدرات وتصحيح ارتفاع السكر معًا، ثم يُطرَح الإنسولين النشط في جسمك (IOB).</p>
 
       <!-- photo -->
       <div class="photo-field">
-        <label>صورة الطعام <span class="opt">(اختياري — لتقدير الكربوهيدرات)</span></label>
+        <label data-i18n-html="photo.label">صورة الطعام <span class="opt">(اختياري — لتقدير الكربوهيدرات)</span></label>
         <div class="photo-actions">
-          <button type="button" class="photo-btn" id="cameraBtn">📷 التقط صورة</button>
-          <button type="button" class="photo-btn" id="galleryBtn">🖼️ اختر صورة</button>
+          <button type="button" class="photo-btn" id="cameraBtn" data-i18n="photo.camera">📷 التقط صورة</button>
+          <button type="button" class="photo-btn" id="galleryBtn" data-i18n="photo.gallery">🖼️ اختر صورة</button>
         </div>
         <input type="file" id="cameraInput" accept="image/*" capture="environment" hidden>
         <input type="file" id="galleryInput" accept="image/*" hidden>
 
         <div class="photo-preview" id="photoPreview">
-          <img id="photoImg" alt="صورة الطعام">
-          <button type="button" class="btn btn-primary" id="estimateBtn" style="margin-top:12px;">قدّر الكربوهيدرات من الصورة</button>
-          <span class="photo-remove" id="photoRemove">إزالة الصورة</span>
+          <img id="photoImg" data-i18n-alt="photo.alt" alt="صورة الطعام">
+          <button type="button" class="btn btn-primary" id="estimateBtn" data-i18n="photo.estimate" style="margin-top:12px;">قدّر الكربوهيدرات من الصورة</button>
+          <span class="photo-remove" id="photoRemove" data-i18n="photo.remove">إزالة الصورة</span>
         </div>
 
         <div class="ai-est" id="aiEst"></div>
         <div class="ai-err" id="aiErr"></div>
 
-        <p class="photo-privacy">عند الضغط على «قدّر»، تُرسَل هذه الصورة إلى خدمة ذكاء اصطناعي لتقدير الكربوهيدرات. التقدير تقريبي وقد يكون خاطئًا — راجِعه دائمًا قبل احتساب أي جرعة. الصورة لا تُرسَل ما لم تضغط «قدّر».</p>
+        <p class="photo-privacy" data-i18n="photo.privacy">عند الضغط على «قدّر»، تُرسَل هذه الصورة إلى خدمة ذكاء اصطناعي لتقدير الكربوهيدرات. التقدير تقريبي وقد يكون خاطئًا — راجِعه دائمًا قبل احتساب أي جرعة. الصورة لا تُرسَل ما لم تضغط «قدّر».</p>
       </div>
 
       <div class="field">
-        <label>الكربوهيدرات المراد تناولها <span class="opt">(اختياري)</span></label>
+        <label data-i18n-html="carbs.label">الكربوهيدرات المراد تناولها <span class="opt">(اختياري)</span></label>
         <div class="inputrow">
-          <input type="number" id="carbs" inputmode="decimal" placeholder="مثال: 45">
-          <span class="unit" id="u-carb">غرام</span>
+          <input type="number" id="carbs" inputmode="decimal" data-i18n-ph="carbs.ph" placeholder="مثال: 45">
+          <span class="unit" id="u-carb" data-i18n="u.gFull">غرام</span>
         </div>
-        <div class="ai-flag" id="carbAiFlag">⚠ هذا الرقم مُقدَّر بالذكاء الاصطناعي — راجِعه وعدّله قبل الحساب.</div>
+        <div class="ai-flag" id="carbAiFlag" data-i18n="carbs.aiflag">⚠ هذا الرقم مُقدَّر بالذكاء الاصطناعي — راجِعه وعدّله قبل الحساب.</div>
       </div>
 
       <div class="field">
-        <label>سكر الدم الحالي <span class="opt">(اختياري)</span></label>
+        <label data-i18n-html="bg.label">سكر الدم الحالي <span class="opt">(اختياري)</span></label>
         <div class="inputrow">
-          <input type="number" id="bg" inputmode="decimal" placeholder="مثال: 180">
+          <input type="number" id="bg" inputmode="decimal" data-i18n-ph="bg.ph" placeholder="مثال: 180">
           <span class="unit" id="u-bg">mg/dL</span>
         </div>
       </div>
 
       <div class="field">
-        <label>الإنسولين النشط في الجسم (IOB) <span class="opt">(اختياري)</span></label>
+        <label data-i18n-html="iob.label">الإنسولين النشط في الجسم (IOB) <span class="opt">(اختياري)</span></label>
         <div class="inputrow">
-          <input type="number" id="iob" inputmode="decimal" placeholder="مثال: 1.5">
-          <span class="unit">وحدة</span>
+          <input type="number" id="iob" inputmode="decimal" data-i18n-ph="iob.ph" placeholder="مثال: 1.5">
+          <span class="unit" data-i18n="u.units">وحدة</span>
         </div>
       </div>
 
-      <button class="btn btn-primary" id="calcBtn">احسب التقدير</button>
+      <button class="btn btn-primary" id="calcBtn" data-i18n="calc.btn">احسب التقدير</button>
 
       <div class="result" id="result">
         <div class="result-top">
-          <div class="result-label">الجرعة المقدّرة</div>
-          <div class="result-num"><span id="rNum">0</span><small> وحدة</small></div>
+          <div class="result-label" data-i18n="result.label">الجرعة المقدّرة</div>
+          <div class="result-num"><span id="rNum">0</span><small id="rUnit" data-i18n="u.unitsHead"> وحدة</small></div>
           <div class="result-type" id="rType">—</div>
           <div class="ai-badge" id="rAiBadge" style="display:none"></div>
         </div>
         <div class="breakdown" id="breakdown"></div>
         <div class="hard-warn" id="hardWarn" style="display:none"></div>
         <div class="low-warn" id="lowWarn" style="display:none"></div>
-        <div class="result-note">مقرَّبة إلى الزيادة التي ضبطتها. هذا حساب فقط — تحقّق قبل أخذ الجرعة.</div>
+        <div class="result-note" data-i18n="result.note">مقرَّبة إلى الزيادة التي ضبطتها. هذا حساب فقط — تحقّق قبل أخذ الجرعة.</div>
       </div>
-      <button class="btn btn-ghost" id="logBtn" style="display:none;margin-top:12px;">احفظ في السجلّ ↓</button>
+      <button class="btn btn-ghost" id="logBtn" data-i18n="log.btn" style="display:none;margin-top:12px;">احفظ في السجلّ ↓</button>
     </div>
   </section>
 
   <!-- LOG -->
   <section id="log" style="display:none">
     <div class="card">
-      <h2>سجلّ الجرعات</h2>
-      <p class="hint">محفوظ محليًا على هذا الجهاز فقط. شاركه مع فريق رعايتك كسجلّ.</p>
-      <div id="logList"><div class="empty">لا توجد إدخالات بعد.<br>احسب تقديرًا واحفظه هنا.</div></div>
-      <div class="clearlog" id="clearLog" style="display:none">حذف جميع الإدخالات</div>
+      <h2 data-i18n="log.title">سجلّ الجرعات</h2>
+      <p class="hint" data-i18n="log.hint">محفوظ محليًا على هذا الجهاز فقط. شاركه مع فريق رعايتك كسجلّ.</p>
+      <div id="logList"></div>
+      <div class="clearlog" id="clearLog" data-i18n="log.clear" style="display:none">حذف جميع الإدخالات</div>
     </div>
   </section>
 
   <!-- SETTINGS -->
   <section id="settings" style="display:none">
     <div class="card">
-      <h2>معاملاتك</h2>
-      <p class="hint">أدخل القيم <b>من وصفتك الطبية</b>. هذه هي الأرقام الوحيدة التي تقود الحساب — احصل عليها من مقدّم الرعاية، لا من التخمين.</p>
+      <h2 data-i18n="settings.title">معاملاتك</h2>
+      <p class="hint" data-i18n-html="settings.hint">أدخل القيم <b>من وصفتك الطبية</b>. هذه هي الأرقام الوحيدة التي تقود الحساب — احصل عليها من مقدّم الرعاية، لا من التخمين.</p>
 
       <div class="field">
-        <label>وحدة قياس السكر</label>
+        <label data-i18n="settings.bgUnit">وحدة قياس السكر</label>
         <select id="bgUnit">
-          <option value="mgdl">mg/dL (الولايات المتحدة)</option>
-          <option value="mmol">mmol/L</option>
+          <option value="mgdl" data-i18n="opt.mgdl">mg/dL (الولايات المتحدة)</option>
+          <option value="mmol" data-i18n="opt.mmol">mmol/L</option>
         </select>
       </div>
 
       <div class="field">
-        <label>نسبة الإنسولين إلى الكربوهيدرات (ICR) <span class="req">— وحدة واحدة لكل __ غرام كربوهيدرات</span></label>
+        <label data-i18n-html="settings.icr">نسبة الإنسولين إلى الكربوهيدرات (ICR) <span class="req">— وحدة واحدة لكل __ غرام كربوهيدرات</span></label>
         <div class="inputrow">
-          <input type="number" id="sICR" inputmode="decimal" placeholder="مثال: 10">
-          <span class="unit">غ/وحدة</span>
+          <input type="number" id="sICR" inputmode="decimal" data-i18n-ph="settings.icrPh" placeholder="مثال: 10">
+          <span class="unit" data-i18n="u.gPerUnit">غ/وحدة</span>
         </div>
       </div>
 
       <div class="field">
-        <label>معامل التصحيح / ISF <span class="req">— وحدة واحدة تخفض السكر بمقدار __</span></label>
+        <label data-i18n-html="settings.isf">معامل التصحيح / ISF <span class="req">— وحدة واحدة تخفض السكر بمقدار __</span></label>
         <div class="inputrow">
-          <input type="number" id="sISF" inputmode="decimal" placeholder="مثال: 50">
+          <input type="number" id="sISF" inputmode="decimal" data-i18n-ph="settings.isfPh" placeholder="مثال: 50">
           <span class="unit" id="u-isf">mg/dL</span>
         </div>
       </div>
 
       <div class="field">
-        <label>سكر الدم المستهدف</label>
+        <label data-i18n="settings.target">سكر الدم المستهدف</label>
         <div class="inputrow">
-          <input type="number" id="sTarget" inputmode="decimal" placeholder="مثال: 110">
+          <input type="number" id="sTarget" inputmode="decimal" data-i18n-ph="settings.targetPh" placeholder="مثال: 110">
           <span class="unit" id="u-tgt">mg/dL</span>
         </div>
       </div>
 
       <div class="two">
         <div class="field">
-          <label>نوع/اسم الإنسولين</label>
-          <input type="text" id="sType" placeholder="مثال: هيومالوج">
+          <label data-i18n="settings.type">نوع/اسم الإنسولين</label>
+          <input type="text" id="sType" data-i18n-ph="settings.typePh" placeholder="مثال: هيومالوج">
         </div>
         <div class="field">
-          <label>التقريب إلى</label>
+          <label data-i18n="settings.round">التقريب إلى</label>
           <select id="sRound">
-            <option value="0.5">0.5 وحدة</option>
-            <option value="1">1 وحدة</option>
-            <option value="0.1">0.1 وحدة</option>
+            <option value="0.5" data-i18n="round.05">0.5 وحدة</option>
+            <option value="1" data-i18n="round.1">1 وحدة</option>
+            <option value="0.1" data-i18n="round.01">0.1 وحدة</option>
           </select>
         </div>
       </div>
 
       <div class="field">
-        <label>صحّح فقط فوق هذا المستوى من السكر <span class="opt">(اختياري)</span></label>
+        <label data-i18n-html="settings.corr">صحّح فقط فوق هذا المستوى من السكر <span class="opt">(اختياري)</span></label>
         <div class="inputrow">
-          <input type="number" id="sCorrThresh" inputmode="decimal" placeholder="مثال: 150">
+          <input type="number" id="sCorrThresh" inputmode="decimal" data-i18n-ph="settings.corrPh" placeholder="مثال: 150">
           <span class="unit" id="u-ct">mg/dL</span>
         </div>
       </div>
 
-      <button class="btn btn-primary" id="saveSettings">احفظ المعاملات</button>
-      <div class="settings-saved" id="savedMsg">✓ تم الحفظ على هذا الجهاز</div>
+      <button class="btn btn-primary" id="saveSettings" data-i18n="settings.save">احفظ المعاملات</button>
+      <div class="settings-saved" id="savedMsg" data-i18n="settings.saved">✓ تم الحفظ على هذا الجهاز</div>
     </div>
   </section>
 
-  <footer>
+  <footer data-i18n-html="footer">
     تبقى بياناتك (السجلّ والإعدادات) على هذا الجهاز. تُرفَع صور الطعام إلى خدمة الذكاء الاصطناعي فقط عند استخدامك ميزة التقدير.<br>
     صُمّم كأداة تسجيل شخصية — وليس جهازًا طبيًا.
   </footer>
@@ -352,51 +371,234 @@
 
 <script>
 (function(){
-  // ---- state (in-memory; persists for the session) ----
-  var S = {
-    bgUnit:'mgdl', icr:null, isf:null, target:null,
-    type:'', round:0.5, corrThresh:null
+  // ============ i18n dictionary ============
+  var T = {
+    ar: {
+      "title":"سجلّ الإنسولين",
+      "eyebrow":"متتبّع شخصي",
+      "h1":"سجلّ <em>الإنسولين</em>",
+      "sub":"حاسبة شفّافة لمعاملات الجرعات التي <b>وصفها طبيبك</b>. تؤدّي العمليات الحسابية فقط — ولا تقرّر أرقامك.",
+      "disclaimer":"<b>⚠ ليست نصيحة طبية.</b> تؤدّي هذه الأداة عمليات حسابية فقط باستخدام القيم التي تُدخلها من خطة علاجك. تحقّق دائمًا من الجرعات مع مقدّم الرعاية الصحية. أخطاء الإنسولين قد تكون مهدِّدة للحياة — لا تتصرّف أبدًا بناءً على تقدير لست متأكّدًا منه.",
+      "tab.calc":"احسب", "tab.log":"السجلّ", "tab.settings":"الإعدادات",
+      "calc.title":"تقدير الجرعة",
+      "calc.hint":"املأ ما ينطبق. تُجمَع تغطية الكربوهيدرات وتصحيح ارتفاع السكر معًا، ثم يُطرَح الإنسولين النشط في جسمك (IOB).",
+      "photo.label":"صورة الطعام <span class=\"opt\">(اختياري — لتقدير الكربوهيدرات)</span>",
+      "photo.camera":"📷 التقط صورة", "photo.gallery":"🖼️ اختر صورة",
+      "photo.alt":"صورة الطعام",
+      "photo.estimate":"قدّر الكربوهيدرات من الصورة",
+      "photo.remove":"إزالة الصورة",
+      "photo.privacy":"عند الضغط على «قدّر»، تُرسَل هذه الصورة إلى خدمة ذكاء اصطناعي لتقدير الكربوهيدرات. التقدير تقريبي وقد يكون خاطئًا — راجِعه دائمًا قبل احتساب أي جرعة. الصورة لا تُرسَل ما لم تضغط «قدّر».",
+      "carbs.label":"الكربوهيدرات المراد تناولها <span class=\"opt\">(اختياري)</span>",
+      "carbs.ph":"مثال: 45",
+      "carbs.aiflag":"⚠ هذا الرقم مُقدَّر بالذكاء الاصطناعي — راجِعه وعدّله قبل الحساب.",
+      "bg.label":"سكر الدم الحالي <span class=\"opt\">(اختياري)</span>",
+      "bg.ph":"مثال: 180",
+      "iob.label":"الإنسولين النشط في الجسم (IOB) <span class=\"opt\">(اختياري)</span>",
+      "iob.ph":"مثال: 1.5",
+      "calc.btn":"احسب التقدير",
+      "result.label":"الجرعة المقدّرة",
+      "result.note":"مقرَّبة إلى الزيادة التي ضبطتها. هذا حساب فقط — تحقّق قبل أخذ الجرعة.",
+      "log.btn":"احفظ في السجلّ ↓",
+      "log.title":"سجلّ الجرعات",
+      "log.hint":"محفوظ محليًا على هذا الجهاز فقط. شاركه مع فريق رعايتك كسجلّ.",
+      "log.clear":"حذف جميع الإدخالات",
+      "log.empty":"لا توجد إدخالات بعد.<br>احسب تقديرًا واحفظه هنا.",
+      "settings.title":"معاملاتك",
+      "settings.hint":"أدخل القيم <b>من وصفتك الطبية</b>. هذه هي الأرقام الوحيدة التي تقود الحساب — احصل عليها من مقدّم الرعاية، لا من التخمين.",
+      "settings.bgUnit":"وحدة قياس السكر",
+      "opt.mgdl":"mg/dL (الولايات المتحدة)", "opt.mmol":"mmol/L",
+      "settings.icr":"نسبة الإنسولين إلى الكربوهيدرات (ICR) <span class=\"req\">— وحدة واحدة لكل __ غرام كربوهيدرات</span>",
+      "settings.icrPh":"مثال: 10",
+      "settings.isf":"معامل التصحيح / ISF <span class=\"req\">— وحدة واحدة تخفض السكر بمقدار __</span>",
+      "settings.isfPh":"مثال: 50",
+      "settings.target":"سكر الدم المستهدف", "settings.targetPh":"مثال: 110",
+      "settings.type":"نوع/اسم الإنسولين", "settings.typePh":"مثال: هيومالوج",
+      "settings.round":"التقريب إلى",
+      "round.05":"0.5 وحدة", "round.1":"1 وحدة", "round.01":"0.1 وحدة",
+      "settings.corr":"صحّح فقط فوق هذا المستوى من السكر <span class=\"opt\">(اختياري)</span>",
+      "settings.corrPh":"مثال: 150",
+      "settings.save":"احفظ المعاملات", "settings.saved":"✓ تم الحفظ على هذا الجهاز",
+      "footer":"تبقى بياناتك (السجلّ والإعدادات) على هذا الجهاز. تُرفَع صور الطعام إلى خدمة الذكاء الاصطناعي فقط عند استخدامك ميزة التقدير.<br>صُمّم كأداة تسجيل شخصية — وليس جهازًا طبيًا.",
+      // dynamic
+      "u.gFull":"غرام", "u.gShort":"غ", "u.units":"وحدة", "u.unitsHead":" وحدة", "u.gPerUnit":"غ/وحدة",
+      "analyzing":"جارٍ التحليل…",
+      "ai.fallback":"تعذّر تقدير الكربوهيدرات. أدخل الرقم يدويًا.",
+      "ai.nofood":"لم يتم التعرّف على طعام واضح في الصورة. أدخل الكربوهيدرات يدويًا.",
+      "ai.connect":"تعذّر الاتصال بخدمة التقدير. تحقّق من اتصالك وأدخل الرقم يدويًا.",
+      "ai.estLead":"تقدير الذكاء الاصطناعي: ~{g} غرام",
+      "ai.conf":"(ثقة: {c})",
+      "ai.items":"العناصر: {items}",
+      "ai.verify":"⚠ هذا تقدير آلي تقريبي. تأكّد من الرقم بنفسك قبل احتساب الجرعة، وعدّله إذا لزم.",
+      "ai.acceptLow":"الثقة منخفضة — استخدم {g} غرام على أي حال",
+      "ai.accepted":"✓ تم إدخال {g} غرام",
+      "conf.low":"منخفضة", "conf.medium":"متوسطة", "conf.high":"عالية", "conf.dash":"—",
+      "listsep":"، ",
+      "calc.needInput":"أدخل الكربوهيدرات أو قراءة سكر الدم أو كليهما.",
+      "miss.icr":"نسبة الإنسولين إلى الكربوهيدرات", "miss.target":"السكر المستهدف", "miss.isf":"معامل التصحيح",
+      "miss.alert":"اضبط {x} في الإعدادات أولًا.", "miss.join":" و",
+      "brk.carb":"تغطية الكربوهيدرات {f}",
+      "brk.corr":"التصحيح {f}",
+      "brk.corrSkip":"التصحيح (السكر أقل من عتبة {thresh})",
+      "brk.iob":"الإنسولين النشط في الجسم",
+      "brk.total":"الإجمالي المقدَّر",
+      "type.insulin":"إنسولين",
+      "badge":"⚠ كربوهيدرات مُقدَّرة بالذكاء الاصطناعي · ثقة {c}",
+      "hard.carb":"كمية الكربوهيدرات ({c} غ) كبيرة بشكل غير معتاد لوجبة واحدة. تأكّد من الرقم{ai} قبل المتابعة.",
+      "hard.carbAi":" (وهو تقدير آلي)",
+      "hard.dose":"الجرعة المقدّرة ({d} وحدة) كبيرة. راجِعها بعناية مع خطتك قبل أخذ أي شيء.",
+      "warn.belowTarget":"سكر دمك ({bg}) أقل من المستهدف. التصحيح هنا سالب — تحقّق جيدًا مما إذا كان عليك أخذ جرعة أصلًا.",
+      "warn.negative":"الإنسولين النشط يتجاوز الحاجة المحسوبة. حُدِّد التقدير عند صفر — راجع خطتك قبل أخذ أي شيء.",
+      "log.metaCarbs":"{c} غ كربوهيدرات",
+      "log.metaBg":"سكر {bg} {unit}",
+      "log.metaIob":"إنسولين نشط {iob} وحدة",
+      "clear.confirm":"حذف جميع إدخالات السجلّ؟"
+    },
+    en: {
+      "title":"Insulin Log",
+      "eyebrow":"Personal tracker",
+      "h1":"Insulin <em>Log</em>",
+      "sub":"A transparent calculator for the dosing parameters <b>your clinician prescribed</b>. It does the arithmetic — it does not decide your numbers.",
+      "disclaimer":"<b>⚠ Not medical advice.</b> This tool only performs math using values you enter from your own treatment plan. Always confirm doses with your healthcare provider. Insulin errors can be life-threatening — never act on an estimate you're unsure about.",
+      "tab.calc":"Calculate", "tab.log":"Log", "tab.settings":"Settings",
+      "calc.title":"Estimate a dose",
+      "calc.hint":"Fill what applies. Carb coverage and high-BG correction are added together, then insulin still active in your body (IOB) is subtracted.",
+      "photo.label":"Food photo <span class=\"opt\">(optional — for carb estimation)</span>",
+      "photo.camera":"📷 Take photo", "photo.gallery":"🖼️ Choose photo",
+      "photo.alt":"food photo",
+      "photo.estimate":"Estimate carbs from photo",
+      "photo.remove":"Remove photo",
+      "photo.privacy":"When you tap “Estimate”, this photo is sent to an AI service to estimate carbs. The estimate is approximate and may be wrong — always review it before calculating any dose. The photo is not sent unless you tap “Estimate”.",
+      "carbs.label":"Carbs to eat <span class=\"opt\">(optional)</span>",
+      "carbs.ph":"e.g. 45",
+      "carbs.aiflag":"⚠ This number is AI-estimated — review and adjust it before calculating.",
+      "bg.label":"Current blood glucose <span class=\"opt\">(optional)</span>",
+      "bg.ph":"e.g. 180",
+      "iob.label":"Active insulin on board (IOB) <span class=\"opt\">(optional)</span>",
+      "iob.ph":"e.g. 1.5",
+      "calc.btn":"Calculate estimate",
+      "result.label":"Estimated dose",
+      "result.note":"Rounded to your configured increment. This is arithmetic only — verify before dosing.",
+      "log.btn":"Save to log ↓",
+      "log.title":"Dose history",
+      "log.hint":"Saved locally on this device only. Share with your care team as a record.",
+      "log.clear":"Clear all entries",
+      "log.empty":"No entries yet.<br>Calculate an estimate and save it here.",
+      "settings.title":"Your parameters",
+      "settings.hint":"Enter the values <b>from your prescription</b>. These are the only numbers that drive the math — get them from your provider, not guesses.",
+      "settings.bgUnit":"Glucose units",
+      "opt.mgdl":"mg/dL (US)", "opt.mmol":"mmol/L",
+      "settings.icr":"Insulin-to-carb ratio (ICR) <span class=\"req\">— 1 unit per __ g carbs</span>",
+      "settings.icrPh":"e.g. 10",
+      "settings.isf":"Correction factor / ISF <span class=\"req\">— 1 unit lowers BG by __</span>",
+      "settings.isfPh":"e.g. 50",
+      "settings.target":"Target blood glucose", "settings.targetPh":"e.g. 110",
+      "settings.type":"Insulin type / name", "settings.typePh":"e.g. Humalog",
+      "settings.round":"Round to",
+      "round.05":"0.5 unit", "round.1":"1 unit", "round.01":"0.1 unit",
+      "settings.corr":"Only correct above this BG <span class=\"opt\">(optional)</span>",
+      "settings.corrPh":"e.g. 150",
+      "settings.save":"Save parameters", "settings.saved":"✓ Saved on this device",
+      "footer":"Your data (log and settings) stays on this device. Food photos are uploaded to the AI service only when you use the estimate feature.<br>Built as a personal logging aid — not a medical device.",
+      // dynamic
+      "u.gFull":"g", "u.gShort":"g", "u.units":"units", "u.unitsHead":" units", "u.gPerUnit":"g/unit",
+      "analyzing":"Analyzing…",
+      "ai.fallback":"Couldn't estimate carbs. Enter the number manually.",
+      "ai.nofood":"No clear food recognized in the photo. Enter carbs manually.",
+      "ai.connect":"Couldn't reach the estimate service. Check your connection and enter the number manually.",
+      "ai.estLead":"AI estimate: ~{g} g",
+      "ai.conf":"(confidence: {c})",
+      "ai.items":"Items: {items}",
+      "ai.verify":"⚠ This is a rough automated estimate. Verify the number yourself before calculating the dose, and adjust if needed.",
+      "ai.acceptLow":"Confidence is low — use {g} g anyway",
+      "ai.accepted":"✓ Entered {g} g",
+      "conf.low":"low", "conf.medium":"medium", "conf.high":"high", "conf.dash":"—",
+      "listsep":", ",
+      "calc.needInput":"Enter carbs, a blood glucose reading, or both.",
+      "miss.icr":"insulin-to-carb ratio", "miss.target":"target BG", "miss.isf":"correction factor",
+      "miss.alert":"Set your {x} in Settings first.", "miss.join":" and ",
+      "brk.carb":"Carb coverage {f}",
+      "brk.corr":"Correction {f}",
+      "brk.corrSkip":"Correction (BG below {thresh} threshold)",
+      "brk.iob":"Insulin on board",
+      "brk.total":"Estimated total",
+      "type.insulin":"insulin",
+      "badge":"⚠ AI-estimated carbs · {c} confidence",
+      "hard.carb":"Carb amount ({c} g) is unusually large for one meal. Confirm the number{ai} before continuing.",
+      "hard.carbAi":" (it's an AI estimate)",
+      "hard.dose":"The estimated dose ({d} units) is large. Review it carefully against your plan before taking anything.",
+      "warn.belowTarget":"Your BG ({bg}) is below target. The correction here is negative — double-check whether you should be dosing at all.",
+      "warn.negative":"Active insulin exceeds the calculated need. Estimate floored at 0 — consult your plan before taking anything.",
+      "log.metaCarbs":"{c} g carbs",
+      "log.metaBg":"BG {bg} {unit}",
+      "log.metaIob":"IOB {iob} units",
+      "clear.confirm":"Delete all log entries?"
+    }
   };
+
+  var LANG = 'ar';
+  function t(key, params){
+    var s = (T[LANG] && T[LANG][key] != null) ? T[LANG][key] : (T.ar[key] != null ? T.ar[key] : key);
+    if(params){ for(var k in params){ s = s.split('{'+k+'}').join(params[k]); } }
+    return s;
+  }
+
+  // ============ state ============
+  var S = { bgUnit:'mgdl', icr:null, isf:null, target:null, type:'', round:0.5, corrThresh:null };
   var logEntries = [];
-  var lastCalc = null;
-  var photoDataUrl = null;   // downscaled food photo (data URL) for the current calc
-  var aiCarb = null;         // {grams, confidence, accepted} when the carbs field came from the AI; null when manual
+  var lastCalc = null;       // entry pending save to log
+  var lastResult = null;     // structured inputs to re-render the result panel on language switch
+  var lastAi = null;         // {kind:'est'|'err', ...} to re-render the AI panel on language switch
+  var photoDataUrl = null;
+  var aiCarb = null;         // {grams, confidence, accepted} when carbs came from AI; null when manual
 
   var $ = function(id){return document.getElementById(id);};
-
-  // bidi-safe LTR wrapper for math/formula fragments rendered inside the RTL UI
   function ltr(s){ return '<span dir="ltr" style="unicode-bidi:isolate;">'+s+'</span>'; }
 
-  // clear the "AI-estimated" state on the carbs field (called when the user types manually)
-  function clearAiCarb(){
-    aiCarb = null;
-    $('carbs').classList.remove('needs-review');
-    $('carbAiFlag').classList.remove('show');
+  // ============ i18n application ============
+  function applyStaticI18n(){
+    document.querySelectorAll('[data-i18n]').forEach(function(el){ el.textContent = t(el.dataset.i18n); });
+    document.querySelectorAll('[data-i18n-html]').forEach(function(el){ el.innerHTML = t(el.dataset.i18nHtml); });
+    document.querySelectorAll('[data-i18n-ph]').forEach(function(el){ el.placeholder = t(el.dataset.i18nPh); });
+    document.querySelectorAll('[data-i18n-alt]').forEach(function(el){ el.alt = t(el.dataset.i18nAlt); });
   }
-  $('carbs').addEventListener('input', function(){
-    // a manual edit after an AI fill means the human took ownership of the number
-    if(aiCarb && String(aiCarb.grams) !== this.value){ clearAiCarb(); }
+  function setLangActive(){
+    document.querySelectorAll('.lang-btn').forEach(function(b){ b.classList.toggle('active', b.dataset.lang===LANG); });
+  }
+  function applyLang(lang){
+    LANG = (lang==='en') ? 'en' : 'ar';
+    try{ localStorage.setItem('insulinLang', LANG); }catch(e){}
+    document.documentElement.lang = LANG;
+    document.documentElement.dir = (LANG==='ar') ? 'rtl' : 'ltr';
+    document.title = t('title');
+    applyStaticI18n();
+    setLangActive();
+    refreshUnits();
+    // re-render dynamic surfaces in the new language
+    renderAiEst();
+    if(lastResult && $('result').classList.contains('show')) renderResultPanel();
+    renderLog();
+  }
+  document.querySelectorAll('.lang-btn').forEach(function(b){
+    b.addEventListener('click', function(){ applyLang(b.dataset.lang); });
   });
 
-  // ---- tabs ----
+  // ============ tabs ============
   var tabs = document.querySelectorAll('.tab');
   var secs = {calc:$('calc'), log:$('log'), settings:$('settings')};
-  tabs.forEach(function(t){
-    t.addEventListener('click', function(){
+  tabs.forEach(function(t0){
+    t0.addEventListener('click', function(){
       tabs.forEach(function(x){x.classList.remove('active');});
-      t.classList.add('active');
-      for(var k in secs){ secs[k].style.display = (k===t.dataset.tab)?'block':'none'; }
+      t0.classList.add('active');
+      for(var k in secs){ secs[k].style.display = (k===t0.dataset.tab)?'block':'none'; }
     });
   });
 
-  // ---- unit labels ----
+  // ============ units / settings ============
   function unitStr(){ return S.bgUnit==='mmol' ? 'mmol/L' : 'mg/dL'; }
   function refreshUnits(){
     var u = unitStr();
     ['u-bg','u-isf','u-tgt','u-ct'].forEach(function(id){ if($(id)) $(id).textContent = u; });
   }
-
-  // ---- settings ----
   function loadSettingsToForm(){
     $('bgUnit').value = S.bgUnit;
     $('sICR').value = S.icr ?? '';
@@ -408,30 +610,43 @@
     refreshUnits();
   }
   $('bgUnit').addEventListener('change', function(){ S.bgUnit=this.value; refreshUnits(); });
-
   $('saveSettings').addEventListener('click', function(){
     S.bgUnit = $('bgUnit').value;
     S.icr = parseFloat($('sICR').value) || null;
     S.isf = parseFloat($('sISF').value) || null;
-    S.target = parseFloat($('sTarget').value);
-    if(isNaN(S.target)) S.target = null;
+    S.target = parseFloat($('sTarget').value); if(isNaN(S.target)) S.target = null;
     S.type = $('sType').value.trim();
     S.round = parseFloat($('sRound').value) || 0.5;
-    S.corrThresh = parseFloat($('sCorrThresh').value);
-    if(isNaN(S.corrThresh)) S.corrThresh = null;
+    S.corrThresh = parseFloat($('sCorrThresh').value); if(isNaN(S.corrThresh)) S.corrThresh = null;
     refreshUnits();
     var m = $('savedMsg'); m.classList.add('show');
     setTimeout(function(){ m.classList.remove('show'); }, 1800);
   });
 
-  // ---- photo capture + downscale ----
+  // ============ carbs field AI state ============
+  function clearAiCarb(){
+    aiCarb = null;
+    $('carbs').classList.remove('needs-review');
+    $('carbAiFlag').classList.remove('show');
+  }
+  $('carbs').addEventListener('input', function(){
+    if(aiCarb && String(aiCarb.grams) !== this.value){ clearAiCarb(); }
+  });
+  function applyAiCarb(g){
+    var f = $('carbs');
+    f.value = g;
+    f.classList.add('needs-review');
+    $('carbAiFlag').classList.add('show');
+    if(aiCarb) aiCarb.accepted = true;
+  }
+
+  // ============ photo capture + downscale ============
   function handleFile(file){
     if(!file) return;
     var reader = new FileReader();
     reader.onload = function(ev){
       var img = new Image();
       img.onload = function(){
-        // downscale so the longest edge is <= 768px, re-encode as JPEG q0.8
         var max = 768;
         var w = img.width, h = img.height;
         if(w > h && w > max){ h = Math.round(h*max/w); w = max; }
@@ -442,8 +657,7 @@
         photoDataUrl = canvas.toDataURL('image/jpeg', 0.8);
         $('photoImg').src = photoDataUrl;
         $('photoPreview').classList.add('show');
-        $('aiEst').classList.remove('show');
-        $('aiErr').classList.remove('show');
+        lastAi = null; renderAiEst();
       };
       img.src = ev.target.result;
     };
@@ -456,98 +670,144 @@
   $('photoRemove').addEventListener('click', function(){
     photoDataUrl = null;
     clearAiCarb();
+    lastAi = null;
     $('photoImg').src = '';
     $('photoPreview').classList.remove('show');
-    $('aiEst').classList.remove('show');
-    $('aiErr').classList.remove('show');
+    renderAiEst();
   });
 
-  // fill the carbs field from an AI estimate and mark it as needing human review
-  function applyAiCarb(g){
-    var f = $('carbs');
-    f.value = g;
-    f.classList.add('needs-review');
-    $('carbAiFlag').classList.add('show');
-    if(aiCarb) aiCarb.accepted = true;
+  // ============ AI estimate panel (re-renderable) ============
+  function renderAiEst(){
+    var est = $('aiEst'), err = $('aiErr');
+    if(!lastAi){ est.classList.remove('show'); err.classList.remove('show'); return; }
+    if(lastAi.kind==='err'){
+      var msg = (lastAi.msg != null) ? lastAi.msg : t(lastAi.key);
+      err.textContent = '⚠ ' + msg;
+      err.classList.add('show'); est.classList.remove('show');
+      return;
+    }
+    // estimate
+    var g = lastAi.grams, conf = t('conf.'+lastAi.confidence);
+    var items = (lastAi.items && lastAi.items.length) ? lastAi.items.join(t('listsep')) : '';
+    var html = '<b>'+t('ai.estLead',{g:g})+'</b> '+t('ai.conf',{c:conf})
+             + (items ? '<br>'+t('ai.items',{items:items}) : '')
+             + '<span class="verify">'+t('ai.verify')+'</span>';
+    if(lastAi.lowConf){
+      html += lastAi.accepted
+        ? '<button type="button" class="btn btn-primary accept" id="acceptEst" disabled>'+t('ai.accepted',{g:g})+'</button>'
+        : '<button type="button" class="btn btn-primary accept" id="acceptEst">'+t('ai.acceptLow',{g:g})+'</button>';
+    }
+    est.innerHTML = html; est.classList.add('show'); err.classList.remove('show');
+    var ab = $('acceptEst');
+    if(ab && !lastAi.accepted){
+      ab.addEventListener('click', function(){ applyAiCarb(g); lastAi.accepted = true; renderAiEst(); });
+    }
   }
 
-  // ---- AI carb estimate from photo ----
   $('estimateBtn').addEventListener('click', function(){
     if(!photoDataUrl) return;
     var btn = this;
-    var est = $('aiEst'), err = $('aiErr');
-    err.classList.remove('show');
     btn.disabled = true;
-    var original = btn.textContent;
-    btn.textContent = 'جارٍ التحليل…';
-
+    btn.textContent = t('analyzing');
     fetch('/api/estimate', {
       method:'POST',
       headers:{'content-type':'application/json'},
-      body: JSON.stringify({ image: photoDataUrl })
+      body: JSON.stringify({ image: photoDataUrl, lang: LANG })
     })
     .then(function(r){ return r.json().then(function(j){ return {ok:r.ok, status:r.status, j:j}; }); })
     .then(function(res){
       if(!res.ok || !res.j || typeof res.j.grams !== 'number'){
-        var msg = (res.j && res.j.message) ? res.j.message
-                : 'تعذّر تقدير الكربوهيدرات. أدخل الرقم يدويًا.';
-        err.textContent = '⚠ ' + msg;
-        err.classList.add('show');
-        return;
+        lastAi = { kind:'err', msg:(res.j && res.j.message) || null, key:'ai.fallback' };
+        clearAiCarb(); renderAiEst(); return;
       }
       var g = res.j.grams;
-      var items = Array.isArray(res.j.items) && res.j.items.length ? res.j.items.join('، ') : '';
-
-      // No food recognised: do NOT pre-fill a misleading 0 g — tell the user to enter manually.
-      if(g === 0 && !items){
+      var items = Array.isArray(res.j.items) ? res.j.items : [];
+      if(g === 0 && !items.length){
         clearAiCarb();
-        err.textContent = '⚠ لم يتم التعرّف على طعام واضح في الصورة. أدخل الكربوهيدرات يدويًا.';
-        err.classList.add('show');
-        return;
+        lastAi = { kind:'err', key:'ai.nofood' };
+        renderAiEst(); return;
       }
-
-      var conf = ({low:'منخفضة', medium:'متوسطة', high:'عالية'})[res.j.confidence] || '—';
-      aiCarb = { grams:g, confidence:res.j.confidence, accepted:false };
-
-      // Low confidence creates friction: do NOT auto-fill — require an explicit tap to accept.
       var lowConf = (res.j.confidence === 'low');
-      var html = '<b>تقدير الذكاء الاصطناعي: ~' + g + ' غرام</b> (ثقة: ' + conf + ')'
-               + (items ? '<br>العناصر: ' + items : '')
-               + '<span class="verify">⚠ هذا تقدير آلي تقريبي. تأكّد من الرقم بنفسك قبل احتساب الجرعة، وعدّله إذا لزم.</span>';
-
-      if(lowConf){
-        html += '<button type="button" class="btn btn-primary accept" id="acceptEst">الثقة منخفضة — استخدم ' + g + ' غرام على أي حال</button>';
-        est.innerHTML = html;
-        est.classList.add('show');
-        $('acceptEst').addEventListener('click', function(){
-          applyAiCarb(g);
-          this.disabled = true;
-          this.textContent = '✓ تم إدخال ' + g + ' غرام';
-        });
-      } else {
-        applyAiCarb(g);  // medium/high: pre-fill the editable field, flagged for review
-        est.innerHTML = html;
-        est.classList.add('show');
-      }
+      aiCarb = { grams:g, confidence:res.j.confidence, accepted:false };
+      lastAi = { kind:'est', grams:g, confidence:res.j.confidence, items:items, lowConf:lowConf, accepted:false };
+      if(!lowConf){ applyAiCarb(g); lastAi.accepted = true; }  // medium/high: pre-fill (no accept button)
+      renderAiEst();
     })
     .catch(function(){
-      err.textContent = '⚠ تعذّر الاتصال بخدمة التقدير. تحقّق من اتصالك وأدخل الرقم يدويًا.';
-      err.classList.add('show');
+      lastAi = { kind:'err', key:'ai.connect' };
+      renderAiEst();
     })
     .finally(function(){
       btn.disabled = false;
-      btn.textContent = original;
+      btn.textContent = t('photo.estimate');
     });
   });
 
-  // ---- rounding ----
+  // ============ rounding ============
   function roundDose(d){
     var step = S.round;
     var r = Math.round(d/step)*step;
     return Math.round(r*100)/100;
   }
 
-  // ---- calculate ----
+  // ============ result panel (re-renderable from lastResult) ============
+  function renderResultPanel(){
+    var lr = lastResult; if(!lr) return;
+    var rows = [];
+    if(lr.carbsApplied){
+      var carbDose = lr.carbs / lr.icr;
+      rows.push({ label: t('brk.carb',{f: ltr(lr.carbs+' '+t('u.gShort')+' ÷ '+lr.icr)}),
+                  value: '+'+carbDose.toFixed(2), neg:false });
+    }
+    if(lr.corrApplied){
+      if(lr.corrSkipped){
+        rows.push({ label: t('brk.corrSkip',{thresh: ltr(lr.corrThresh)}), value:'+0.00', neg:false });
+      } else {
+        var corrDose = (lr.bg - lr.target) / lr.isf;
+        rows.push({ label: t('brk.corr',{f: ltr('('+lr.bg+' − '+lr.target+') ÷ '+lr.isf)}),
+                    value:(corrDose>=0?'+':'')+corrDose.toFixed(2), neg:false });
+      }
+    }
+    if(lr.iob>0){ rows.push({ label: t('brk.iob'), value:'−'+lr.iob.toFixed(2), neg:true }); }
+
+    var unit = t('u.units');
+    var html = '';
+    rows.forEach(function(r){
+      html += '<div class="brk-row '+(r.neg?'neg':'')+'"><span>'+r.label+'</span>'
+            + '<span class="v">'+ltr(r.value)+' '+unit+'</span></div>';
+    });
+    html += '<div class="brk-row total"><span>'+t('brk.total')+'</span>'
+          + '<span class="v">'+ltr(lr.dose.toFixed(2))+' '+unit+'</span></div>';
+    $('breakdown').innerHTML = html;
+
+    $('rNum').textContent = lr.dose.toFixed(lr.dose%1===0?0:2);
+    $('rType').textContent = lr.type ? lr.type : t('type.insulin');
+
+    // AI badge
+    var rb = $('rAiBadge');
+    if(lr.aiUsed){
+      rb.textContent = t('badge',{c: t('conf.'+lr.aiConf)});
+      rb.style.display='inline-block';
+    } else { rb.style.display='none'; }
+
+    // hard safety gate
+    var hw = $('hardWarn'); var hardMsgs = [];
+    if(lr.carbs!==null && lr.carbs > 250){
+      hardMsgs.push(t('hard.carb',{c: lr.carbs, ai: lr.aiUsed ? t('hard.carbAi') : ''}));
+    }
+    if(lr.dose >= 25){ hardMsgs.push(t('hard.dose',{d: lr.dose.toFixed(2)})); }
+    if(hardMsgs.length){ hw.innerHTML = '⛔ '+hardMsgs.join('<br><br>⛔ '); hw.style.display='block'; }
+    else { hw.style.display='none'; }
+
+    // low / negative warnings
+    var lw = $('lowWarn'); var warnMsgs = [];
+    if(lr.bg!==null && lr.target!==null && lr.bg < lr.target){ warnMsgs.push(t('warn.belowTarget',{bg: lr.bg})); }
+    if(lr.raw < 0){ warnMsgs.push(t('warn.negative')); }
+    if(warnMsgs.length){ lw.innerHTML = '⚠ '+warnMsgs.join('<br><br>⚠ '); lw.style.display='block'; }
+    else { lw.style.display='none'; }
+  }
+
+  // ============ calculate ============
   $('calcBtn').addEventListener('click', function(){
     var carbs = parseFloat($('carbs').value);
     var bg = parseFloat($('bg').value);
@@ -556,145 +816,75 @@
     if(isNaN(bg)) bg = null;
     if(isNaN(iob)) iob = 0;
 
-    if(carbs===null && bg===null){
-      alert('أدخل الكربوهيدرات أو قراءة سكر الدم أو كليهما.');
-      return;
-    }
+    if(carbs===null && bg===null){ alert(t('calc.needInput')); return; }
 
-    var rows = [];
-    var carbDose = 0, corrDose = 0;
     var missing = [];
+    var carbsApplied = false, corrApplied = false, corrSkipped = false;
 
-    // carb coverage
     if(carbs!==null){
-      if(!S.icr){ missing.push('نسبة الإنسولين إلى الكربوهيدرات'); }
-      else {
-        carbDose = carbs / S.icr;
-        rows.push({label:'تغطية الكربوهيدرات '+ltr(carbs+' غ ÷ '+S.icr), v:'+'+carbDose.toFixed(2)+' وحدة'});
-      }
+      if(!S.icr){ missing.push(t('miss.icr')); } else { carbsApplied = true; }
     }
-
-    // correction
     if(bg!==null){
-      if(S.target===null){ missing.push('السكر المستهدف'); }
-      else if(!S.isf){ missing.push('معامل التصحيح'); }
-      else {
-        var doCorrect = true;
-        if(S.corrThresh!==null && bg < S.corrThresh){ doCorrect = false; }
-        if(doCorrect){
-          corrDose = (bg - S.target) / S.isf;
-          rows.push({label:'التصحيح '+ltr('('+bg+' − '+S.target+') ÷ '+S.isf), v:(corrDose>=0?'+':'')+corrDose.toFixed(2)+' وحدة'});
-        } else {
-          rows.push({label:'التصحيح (السكر أقل من عتبة '+ltr(S.corrThresh)+')', v:'+0.00 وحدة'});
-        }
-      }
+      if(S.target===null){ missing.push(t('miss.target')); }
+      else if(!S.isf){ missing.push(t('miss.isf')); }
+      else { corrApplied = true; if(S.corrThresh!==null && bg < S.corrThresh){ corrSkipped = true; } }
     }
-
     if(missing.length){
-      alert('اضبط '+missing.join(' و')+' في الإعدادات أولًا.');
+      alert(t('miss.alert',{x: missing.join(t('miss.join'))}));
       tabs.forEach(function(x){x.classList.remove('active');});
       document.querySelector('[data-tab=settings]').classList.add('active');
       for(var k in secs){ secs[k].style.display = (k==='settings')?'block':'none'; }
       return;
     }
 
+    var carbDose = carbsApplied ? carbs / S.icr : 0;
+    var corrDose = (corrApplied && !corrSkipped) ? (bg - S.target) / S.isf : 0;
     var subtotal = carbDose + corrDose;
-    if(iob>0){
-      rows.push({label:'الإنسولين النشط في الجسم', v:'−'+iob.toFixed(2)+' وحدة', neg:true});
-    }
-
     var raw = subtotal - iob;
-    var dose = roundDose(raw);
-    if(dose < 0) dose = 0;
+    var dose = roundDose(raw); if(dose < 0) dose = 0;
+    var aiUsed = !!(aiCarb && carbs!==null && Number(aiCarb.grams) === carbs);
 
-    // render breakdown — value pill keeps the number LTR-isolated, unit stays outside it
-    var html = '';
-    rows.forEach(function(r){
-      var parts = r.v.split(' ');
-      var num = parts.shift();
-      var unit = parts.join(' ');
-      html += '<div class="brk-row '+(r.neg?'neg':'')+'"><span>'+r.label+'</span>'
-            + '<span class="v">'+ltr(num)+' '+unit+'</span></div>';
-    });
-    html += '<div class="brk-row total"><span>الإجمالي المقدَّر</span><span class="v">'+ltr(dose.toFixed(2))+' وحدة</span></div>';
-    $('breakdown').innerHTML = html;
-
-    $('rNum').textContent = dose.toFixed(dose%1===0?0:2);
-    $('rType').textContent = S.type ? S.type : 'إنسولين';
+    lastResult = {
+      carbsApplied:carbsApplied, carbs:carbs, icr:S.icr,
+      corrApplied:corrApplied, corrSkipped:corrSkipped, bg:bg, target:S.target, isf:S.isf, corrThresh:S.corrThresh,
+      iob:iob, raw:raw, dose:dose, aiUsed:aiUsed, aiConf: aiUsed ? aiCarb.confidence : null, type:S.type
+    };
+    renderResultPanel();
     $('result').classList.add('show');
     $('logBtn').style.display = 'block';
 
-    // was this dose driven by an AI carb estimate the user did not override?
-    var aiUsed = !!(aiCarb && carbs!==null && Number(aiCarb.grams) === carbs);
-
-    // AI-estimate badge travels onto the result panel
-    var rb = $('rAiBadge');
-    if(aiUsed){
-      var cTxt = ({low:'منخفضة', medium:'متوسطة', high:'عالية'})[aiCarb.confidence] || '—';
-      rb.textContent = '⚠ كربوهيدرات مُقدَّرة بالذكاء الاصطناعي · ثقة ' + cTxt;
-      rb.style.display='inline-block';
-    } else { rb.style.display='none'; }
-
-    // hard safety gate: implausibly large carb intake or resulting dose
-    var hw = $('hardWarn');
-    var hardMsgs = [];
-    if(carbs!==null && carbs > 250){
-      hardMsgs.push('كمية الكربوهيدرات ('+carbs+' غ) كبيرة بشكل غير معتاد لوجبة واحدة. تأكّد من الرقم'+(aiUsed?' (وهو تقدير آلي)':'')+' قبل المتابعة.');
-    }
-    if(dose >= 25){
-      hardMsgs.push('الجرعة المقدّرة ('+dose.toFixed(2)+' وحدة) كبيرة. راجِعها بعناية مع خطتك قبل أخذ أي شيء.');
-    }
-    if(hardMsgs.length){
-      hw.innerHTML = '⛔ '+hardMsgs.join('<br><br>⛔ ');
-      hw.style.display='block';
-    } else { hw.style.display='none'; }
-
-    // low / negative warnings
-    var lw = $('lowWarn');
-    var warnMsgs = [];
-    if(bg!==null && S.target!==null && bg < S.target){
-      warnMsgs.push('سكر دمك ('+bg+') أقل من المستهدف. التصحيح هنا سالب — تحقّق جيدًا مما إذا كان عليك أخذ جرعة أصلًا.');
-    }
-    if(raw < 0){
-      warnMsgs.push('الإنسولين النشط يتجاوز الحاجة المحسوبة. حُدِّد التقدير عند صفر — راجع خطتك قبل أخذ أي شيء.');
-    }
-    if(warnMsgs.length){
-      lw.innerHTML = '⚠ '+warnMsgs.join('<br><br>⚠ ');
-      lw.style.display='block';
-    } else { lw.style.display='none'; }
-
     lastCalc = {
-      dose:dose, type:S.type||'إنسولين', carbs:carbs, bg:bg, iob:iob,
+      dose:dose, type:S.type, carbs:carbs, bg:bg, iob:iob,
       bgUnit:unitStr(), photo:photoDataUrl,
       aiCarb: aiUsed ? {grams:aiCarb.grams, confidence:aiCarb.confidence} : null,
       ts:new Date()
     };
   });
 
-  // ---- log ----
+  // ============ log ============
   function renderLog(){
     var list = $('logList');
     if(!logEntries.length){
-      list.innerHTML = '<div class="empty">لا توجد إدخالات بعد.<br>احسب تقديرًا واحفظه هنا.</div>';
+      list.innerHTML = '<div class="empty">'+t('log.empty')+'</div>';
       $('clearLog').style.display='none';
       return;
     }
+    var locale = (LANG==='ar') ? 'ar-u-nu-latn' : 'en-US';
     var html = '';
     logEntries.slice().reverse().forEach(function(e){
       var parts = [];
-      if(e.carbs!==null) parts.push(e.carbs+' غ كربوهيدرات');
-      if(e.bg!==null) parts.push('سكر '+e.bg+' '+e.bgUnit);
-      if(e.iob>0) parts.push('إنسولين نشط '+e.iob+' وحدة');
-      var t = e.ts;
-      var time = t.toLocaleString('ar-u-nu-latn', {month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+      if(e.carbs!==null) parts.push(t('log.metaCarbs',{c:e.carbs}));
+      if(e.bg!==null) parts.push(t('log.metaBg',{bg:e.bg, unit:e.bgUnit}));
+      if(e.iob>0) parts.push(t('log.metaIob',{iob:e.iob}));
+      var time = e.ts.toLocaleString(locale, {month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+      var typeTxt = e.type ? e.type : t('type.insulin');
       var aiBadge = e.aiCarb
-        ? '<span class="ai-badge">⚠ كربوهيدرات مُقدَّرة بالذكاء الاصطناعي · ثقة '
-          + (({low:'منخفضة', medium:'متوسطة', high:'عالية'})[e.aiCarb.confidence]||'—') + '</span>'
+        ? '<span class="ai-badge">'+t('badge',{c: t('conf.'+e.aiCarb.confidence)})+'</span>'
         : '';
-      html += '<div class="logitem"><div class="lt"><span class="dose">'+ltr(e.dose.toFixed(e.dose%1===0?0:2))+' وحدة</span><span class="time">'+time+'</span></div>'
-            + '<div class="meta">'+e.type+(parts.length?' · '+parts.join(' · '):'')+'</div>'
+      html += '<div class="logitem"><div class="lt"><span class="dose">'+ltr(e.dose.toFixed(e.dose%1===0?0:2))+' '+t('u.units')+'</span><span class="time">'+time+'</span></div>'
+            + '<div class="meta">'+typeTxt+(parts.length?' · '+parts.join(' · '):'')+'</div>'
             + (aiBadge ? '<div>'+aiBadge+'</div>' : '')
-            + (e.photo ? '<img class="thumb" src="'+e.photo+'" alt="صورة الطعام">' : '')
+            + (e.photo ? '<img class="thumb" src="'+e.photo+'" alt="'+t('photo.alt')+'">' : '')
             + '</div>';
     });
     list.innerHTML = html;
@@ -704,30 +894,30 @@
     if(!lastCalc) return;
     logEntries.push(lastCalc);
     lastCalc = null;
+    lastResult = null;
     renderLog();
-    // jump to log
     tabs.forEach(function(x){x.classList.remove('active');});
     document.querySelector('[data-tab=log]').classList.add('active');
     for(var k in secs){ secs[k].style.display = (k==='log')?'block':'none'; }
     $('logBtn').style.display='none';
     $('result').classList.remove('show');
     $('carbs').value=''; $('bg').value=''; $('iob').value='';
-    // reset photo + AI state for the next entry
     photoDataUrl = null;
     clearAiCarb();
+    lastAi = null;
     $('photoImg').src = '';
     $('photoPreview').classList.remove('show');
-    $('aiEst').classList.remove('show');
-    $('aiErr').classList.remove('show');
+    renderAiEst();
   });
   $('clearLog').addEventListener('click', function(){
-    if(confirm('حذف جميع إدخالات السجلّ؟')){ logEntries=[]; renderLog(); }
+    if(confirm(t('clear.confirm'))){ logEntries=[]; renderLog(); }
   });
 
-  // init
+  // ============ init ============
+  var stored = 'ar';
+  try{ stored = localStorage.getItem('insulinLang') || 'ar'; }catch(e){}
   loadSettingsToForm();
-  refreshUnits();
-  renderLog();
+  applyLang(stored);  // applies i18n, units, and renders log
 })();
 </script>
 </body>

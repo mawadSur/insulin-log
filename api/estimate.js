@@ -82,17 +82,20 @@ function originAllowed(req) {
   } catch { return false; }
 }
 
-const SYSTEM_PROMPT = [
-  'You are a nutrition estimation assistant for a diabetes logging app.',
-  'Given a photo of food, estimate the TOTAL digestible carbohydrates in grams for the portion shown.',
-  'Rules:',
-  '- Respond with ONLY a JSON object, no prose, no markdown fences.',
-  '- Shape: {"grams": <integer>=0>, "confidence": "low"|"medium"|"high", "items": [<short strings>]}.',
-  '- "items" lists the main foods you see (in Arabic when natural, else English), max 6 entries.',
-  '- If the image does not clearly contain food, return {"grams": 0, "confidence": "low", "items": []}.',
-  '- Be conservative. Portion sizes from photos are uncertain; prefer "low"/"medium" confidence.',
-  '- Never include insulin advice, doses, or medical recommendations. Carbs only.'
-].join('\n');
+function systemPrompt(lang) {
+  const itemsLang = lang === 'en' ? 'in English' : 'in Arabic';
+  return [
+    'You are a nutrition estimation assistant for a diabetes logging app.',
+    'Given a photo of food, estimate the TOTAL digestible carbohydrates in grams for the portion shown.',
+    'Rules:',
+    '- Respond with ONLY a JSON object, no prose, no markdown fences.',
+    '- Shape: {"grams": <integer>=0>, "confidence": "low"|"medium"|"high", "items": [<short strings>]}.',
+    '- "items" lists the main foods you see (' + itemsLang + '), max 6 entries.',
+    '- If the image does not clearly contain food, return {"grams": 0, "confidence": "low", "items": []}.',
+    '- Be conservative. Portion sizes from photos are uncertain; prefer "low"/"medium" confidence.',
+    '- Never include insulin advice, doses, or medical recommendations. Carbs only.'
+  ].join('\n');
+}
 
 function readJsonBody(req) {
   // Vercel may pre-parse JSON into req.body; otherwise read the stream.
@@ -182,6 +185,8 @@ module.exports = async function handler(req, res) {
     return res.end(JSON.stringify({ message: 'صورة غير صالحة أو كبيرة جدًا. التقط صورة أوضح أو أصغر.' }));
   }
 
+  const lang = (body && body.lang === 'en') ? 'en' : 'ar';
+
   let Anthropic;
   try {
     const mod = require('@anthropic-ai/sdk');
@@ -195,15 +200,18 @@ module.exports = async function handler(req, res) {
 
   let message;
   try {
+    const userText = lang === 'en'
+      ? 'Estimate the total carbohydrates in grams for this meal. Return JSON only.'
+      : 'قدّر إجمالي الكربوهيدرات بالغرام لهذه الوجبة. أعد JSON فقط.';
     message = await client.messages.create({
       model: MODEL,
       max_tokens: 300,
-      system: SYSTEM_PROMPT,
+      system: systemPrompt(lang),
       messages: [{
         role: 'user',
         content: [
           { type: 'image', source: { type: 'base64', media_type: parsed.mediaType, data: parsed.base64 } },
-          { type: 'text', text: 'قدّر إجمالي الكربوهيدرات بالغرام لهذه الوجبة. أعد JSON فقط.' }
+          { type: 'text', text: userText }
         ]
       }]
     });
