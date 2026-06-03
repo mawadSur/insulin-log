@@ -1,0 +1,9 @@
+{
+  "name": "insulin-log",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Arabic insulin dose calculator/logger with AI food-photo carb estimation",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.100.0"
+  }
+}

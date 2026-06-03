@@ -1,6 +1,12 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "cleanUrls": true,
+  "functions": {
+    "api/estimate.js": {
+      "maxDuration": 30,
+      "memory": 512
+    }
+  },
   "headers": [
     {
       "source": "/(.*)",

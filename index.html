@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0d1117">
-<title>Insulin Log</title>
+<title>سجلّ الإنسولين</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Spline+Sans+Mono:wght@400;500;600&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap');
 
   :root{
     --bg:#0c1116;
@@ -25,12 +25,12 @@
   }
 
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-  html,body{background:var(--bg);color:var(--ink);font-family:'Spline Sans Mono',monospace;}
+  html,body{background:var(--bg);color:var(--ink);font-family:'IBM Plex Sans Arabic',sans-serif;}
   body{
     min-height:100vh;
     background:
-      radial-gradient(1200px 600px at 90% -10%, rgba(94,224,176,.08), transparent 60%),
-      radial-gradient(900px 500px at -10% 110%, rgba(43,185,138,.06), transparent 55%),
+      radial-gradient(1200px 600px at 10% -10%, rgba(94,224,176,.08), transparent 60%),
+      radial-gradient(900px 500px at 110% 110%, rgba(43,185,138,.06), transparent 55%),
       var(--bg);
     padding:0 0 64px;
   }
@@ -42,27 +42,27 @@
     margin-bottom:22px;
   }
   .eyebrow{
-    font-size:11px;letter-spacing:.28em;text-transform:uppercase;
+    font-size:12px;
     color:var(--accent);font-weight:600;
   }
   h1{
-    font-family:'Fraunces',serif;font-weight:600;
-    font-size:34px;line-height:1.05;margin-top:8px;letter-spacing:-.01em;
+    font-family:'Cairo',sans-serif;font-weight:700;
+    font-size:34px;line-height:1.15;margin-top:8px;
   }
-  h1 em{font-style:italic;color:var(--accent);}
-  .sub{color:var(--ink-dim);font-size:12.5px;margin-top:10px;line-height:1.5;}
+  h1 em{font-style:normal;color:var(--accent);}
+  .sub{color:var(--ink-dim);font-size:13px;margin-top:10px;line-height:1.7;}
 
   .disclaimer{
     margin-top:16px;border:1px solid rgba(255,180,84,.32);
     background:rgba(255,180,84,.06);border-radius:12px;padding:12px 14px;
-    font-size:11.5px;line-height:1.55;color:#f4d9a8;
+    font-size:12px;line-height:1.75;color:#f4d9a8;
   }
   .disclaimer b{color:var(--warn);}
 
   .tabs{display:flex;gap:6px;margin-bottom:18px;background:var(--panel);
     border:1px solid var(--line);border-radius:14px;padding:5px;}
   .tab{flex:1;text-align:center;padding:10px 4px;border-radius:10px;
-    font-size:12.5px;font-weight:500;color:var(--ink-dim);cursor:pointer;
+    font-size:13px;font-weight:500;color:var(--ink-dim);cursor:pointer;
     transition:.18s;border:none;background:none;font-family:inherit;}
   .tab.active{background:var(--accent);color:#06231a;font-weight:600;}
 
@@ -70,14 +70,14 @@
     background:var(--panel);border:1px solid var(--line);border-radius:18px;
     padding:20px 18px;margin-bottom:16px;box-shadow:var(--shadow);
   }
-  .card h2{font-family:'Fraunces',serif;font-weight:600;font-size:19px;margin-bottom:4px;}
-  .card .hint{font-size:11.5px;color:var(--ink-faint);margin-bottom:16px;line-height:1.5;}
+  .card h2{font-family:'Cairo',sans-serif;font-weight:700;font-size:20px;margin-bottom:4px;}
+  .card .hint{font-size:12px;color:var(--ink-faint);margin-bottom:16px;line-height:1.7;}
 
   .field{margin-bottom:14px;}
   .field:last-child{margin-bottom:0;}
-  label{display:block;font-size:11.5px;color:var(--ink-dim);margin-bottom:7px;
-    letter-spacing:.02em;}
+  label{display:block;font-size:12px;color:var(--ink-dim);margin-bottom:7px;}
   label .req{color:var(--accent);}
+  label .opt{color:var(--ink-faint);}
   .inputrow{display:flex;align-items:stretch;gap:0;}
   input[type=number],input[type=text],select{
     width:100%;background:var(--panel-2);border:1px solid var(--line);
@@ -85,201 +85,268 @@
     border-radius:11px;outline:none;transition:.15s;
   }
   input:focus,select:focus{border-color:var(--accent);background:#16222b;}
-  .inputrow input{border-top-right-radius:0;border-bottom-right-radius:0;}
+  /* logical radii so it works in RTL and LTR: square the edge that meets the unit pill */
+  .inputrow input{border-start-end-radius:0;border-end-end-radius:0;}
   .unit{display:flex;align-items:center;padding:0 14px;background:var(--panel-2);
-    border:1px solid var(--line);border-left:none;border-radius:0 11px 11px 0;
+    border:1px solid var(--line);border-inline-start:none;
+    border-radius:0;border-start-end-radius:11px;border-end-end-radius:11px;
     font-size:12px;color:var(--ink-faint);white-space:nowrap;min-width:64px;justify-content:center;}
 
   .two{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 
   .btn{width:100%;padding:15px;border:none;border-radius:13px;font-family:inherit;
-    font-size:14px;font-weight:600;cursor:pointer;transition:.18s;margin-top:4px;}
+    font-size:15px;font-weight:600;cursor:pointer;transition:.18s;margin-top:4px;}
   .btn-primary{background:var(--accent);color:#06231a;}
   .btn-primary:active{transform:scale(.985);background:var(--accent-deep);}
+  .btn-primary:disabled{opacity:.55;cursor:default;transform:none;}
   .btn-ghost{background:transparent;color:var(--ink-dim);border:1px solid var(--line);}
+
+  /* photo */
+  .photo-field{border:1px dashed var(--line);border-radius:14px;padding:14px;background:var(--panel-2);margin-bottom:14px;}
+  .photo-actions{display:flex;gap:10px;}
+  .photo-btn{flex:1;padding:12px;border-radius:11px;border:1px solid var(--line);background:var(--panel);
+    color:var(--ink);font-family:inherit;font-size:13px;font-weight:500;cursor:pointer;transition:.15s;}
+  .photo-btn:active{border-color:var(--accent);}
+  .photo-preview{margin-top:12px;display:none;}
+  .photo-preview.show{display:block;}
+  .photo-preview img{width:100%;max-height:220px;object-fit:cover;border-radius:11px;border:1px solid var(--line);}
+  .photo-remove{display:block;text-align:center;font-size:11.5px;color:var(--ink-faint);
+    margin-top:8px;cursor:pointer;text-decoration:underline;}
+  .photo-privacy{font-size:11px;color:var(--ink-faint);line-height:1.6;margin-top:10px;}
+  .ai-est{display:none;margin-top:10px;border-radius:11px;padding:11px 13px;
+    background:rgba(94,224,176,.08);border:1px solid rgba(94,224,176,.3);
+    font-size:12px;color:#bdeedd;line-height:1.6;}
+  .ai-est.show{display:block;}
+  .ai-est b{color:var(--accent);}
+  .ai-est .verify{color:var(--warn);display:block;margin-top:5px;}
+  .ai-est .accept{margin-top:10px;padding:11px;font-size:13px;}
+  .ai-err{display:none;margin-top:10px;border-radius:11px;padding:11px 13px;
+    background:rgba(255,107,107,.1);border:1px solid rgba(255,107,107,.3);
+    font-size:12px;color:#ffb3b3;line-height:1.6;}
+  .ai-err.show{display:block;}
+  /* carb field flagged as AI-sourced and awaiting human review */
+  input.needs-review{border-color:var(--warn);background:#241f15;}
+  .ai-flag{font-size:11px;color:var(--warn);margin-top:6px;display:none;}
+  .ai-flag.show{display:block;}
+
+  /* AI-estimate badge that travels onto the result panel + log */
+  .ai-badge{display:inline-block;font-size:10.5px;font-weight:600;color:#241f15;
+    background:var(--warn);border-radius:6px;padding:2px 7px;margin-top:8px;}
+  .result-top .ai-badge{margin-top:10px;}
+
+  /* high-dose / high-carb safety gate */
+  .hard-warn{background:rgba(255,107,107,.16);border-top:1px solid rgba(255,107,107,.45);
+    padding:13px 18px;font-size:12.5px;color:#ffc2c2;line-height:1.65;font-weight:500;}
 
   .result{margin-top:18px;border-radius:14px;overflow:hidden;border:1px solid var(--line);
     display:none;}
   .result.show{display:block;animation:rise .3s ease;}
   @keyframes rise{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
   .result-top{background:linear-gradient(135deg,#16302a,#11241f);padding:20px;text-align:center;}
-  .result-label{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);}
-  .result-num{font-family:'Fraunces',serif;font-size:52px;font-weight:700;line-height:1;margin:8px 0 2px;}
-  .result-num small{font-size:18px;color:var(--ink-dim);font-weight:400;font-family:'Spline Sans Mono';}
-  .result-type{font-size:12px;color:var(--ink-dim);}
+  .result-label{font-size:12px;color:var(--accent);}
+  .result-num{font-family:'Cairo',sans-serif;font-size:52px;font-weight:700;line-height:1;margin:8px 0 2px;direction:ltr;}
+  .result-num small{font-size:18px;color:var(--ink-dim);font-weight:400;font-family:'IBM Plex Sans Arabic';}
+  .result-type{font-size:12.5px;color:var(--ink-dim);}
   .breakdown{background:var(--panel-2);padding:14px 18px;}
-  .brk-row{display:flex;justify-content:space-between;font-size:12.5px;padding:6px 0;
+  .brk-row{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;padding:6px 0;
     border-bottom:1px dashed var(--line);}
   .brk-row:last-child{border:none;}
-  .brk-row .v{color:var(--ink);font-weight:500;}
+  .brk-row .v{color:var(--ink);font-weight:500;direction:ltr;white-space:nowrap;}
   .brk-row.total{font-weight:600;color:var(--accent);padding-top:10px;}
   .brk-row.neg .v{color:var(--warn);}
-  .result-note{padding:12px 18px;font-size:11px;color:var(--ink-faint);line-height:1.55;
+  .result-note{padding:12px 18px;font-size:11.5px;color:var(--ink-faint);line-height:1.7;
     background:var(--panel-2);border-top:1px solid var(--line);}
 
   .low-warn{background:rgba(255,107,107,.1);border-top:1px solid rgba(255,107,107,.3);
-    padding:12px 18px;font-size:12px;color:#ffb3b3;line-height:1.5;}
+    padding:12px 18px;font-size:12px;color:#ffb3b3;line-height:1.6;}
 
   /* log */
   .logitem{background:var(--panel-2);border:1px solid var(--line);border-radius:12px;
     padding:13px 15px;margin-bottom:10px;}
-  .logitem .lt{display:flex;justify-content:space-between;align-items:baseline;}
-  .logitem .dose{font-family:'Fraunces',serif;font-size:22px;font-weight:600;color:var(--accent);}
+  .logitem .lt{display:flex;justify-content:space-between;align-items:baseline;gap:10px;}
+  .logitem .dose{font-family:'Cairo',sans-serif;font-size:22px;font-weight:600;color:var(--accent);direction:ltr;}
   .logitem .time{font-size:11px;color:var(--ink-faint);}
-  .logitem .meta{font-size:11.5px;color:var(--ink-dim);margin-top:5px;line-height:1.5;}
-  .empty{text-align:center;color:var(--ink-faint);font-size:12.5px;padding:30px 10px;line-height:1.6;}
-  .clearlog{font-size:11px;color:var(--ink-faint);text-align:center;margin-top:8px;
+  .logitem .meta{font-size:12px;color:var(--ink-dim);margin-top:5px;line-height:1.6;}
+  .logitem .thumb{width:100%;max-height:160px;object-fit:cover;border-radius:9px;
+    border:1px solid var(--line);margin-top:10px;}
+  .empty{text-align:center;color:var(--ink-faint);font-size:13px;padding:30px 10px;line-height:1.8;}
+  .clearlog{font-size:11.5px;color:var(--ink-faint);text-align:center;margin-top:8px;
     cursor:pointer;text-decoration:underline;}
 
-  .settings-saved{font-size:11.5px;color:var(--accent);text-align:center;margin-top:10px;
+  .settings-saved{font-size:12px;color:var(--accent);text-align:center;margin-top:10px;
     opacity:0;transition:.3s;}
   .settings-saved.show{opacity:1;}
 
-  footer{text-align:center;font-size:10.5px;color:var(--ink-faint);margin-top:24px;line-height:1.6;}
+  footer{text-align:center;font-size:11px;color:var(--ink-faint);margin-top:24px;line-height:1.8;}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
-    <div class="eyebrow">Personal Tracker</div>
-    <h1>Insulin <em>Log</em></h1>
-    <p class="sub">A transparent calculator for the dosing parameters <b>your clinician prescribed</b>. It does the arithmetic — it does not decide your numbers.</p>
+    <div class="eyebrow">متتبّع شخصي</div>
+    <h1>سجلّ <em>الإنسولين</em></h1>
+    <p class="sub">حاسبة شفّافة لمعاملات الجرعات التي <b>وصفها طبيبك</b>. تؤدّي العمليات الحسابية فقط — ولا تقرّر أرقامك.</p>
     <div class="disclaimer">
-      <b>⚠ Not medical advice.</b> This tool only performs math using values you enter from your own treatment plan. Always confirm doses with your healthcare provider. Insulin errors can be life-threatening — never act on an estimate you're unsure about.
+      <b>⚠ ليست نصيحة طبية.</b> تؤدّي هذه الأداة عمليات حسابية فقط باستخدام القيم التي تُدخلها من خطة علاجك. تحقّق دائمًا من الجرعات مع مقدّم الرعاية الصحية. أخطاء الإنسولين قد تكون مهدِّدة للحياة — لا تتصرّف أبدًا بناءً على تقدير لست متأكّدًا منه.
     </div>
   </header>
 
   <div class="tabs">
-    <button class="tab active" data-tab="calc">Calculate</button>
-    <button class="tab" data-tab="log">Log</button>
-    <button class="tab" data-tab="settings">Settings</button>
+    <button class="tab active" data-tab="calc">احسب</button>
+    <button class="tab" data-tab="log">السجلّ</button>
+    <button class="tab" data-tab="settings">الإعدادات</button>
   </div>
 
   <!-- CALC -->
   <section id="calc">
     <div class="card">
-      <h2>Estimate a dose</h2>
-      <p class="hint">Fill what applies. Carb coverage and high-BG correction are added together, then insulin still active in your body (IOB) is subtracted.</p>
+      <h2>تقدير الجرعة</h2>
+      <p class="hint">املأ ما ينطبق. تُجمَع تغطية الكربوهيدرات وتصحيح ارتفاع السكر معًا، ثم يُطرَح الإنسولين النشط في جسمك (IOB).</p>
 
-      <div class="field">
-        <label>Carbs to eat <span style="color:var(--ink-faint)">(optional)</span></label>
-        <div class="inputrow">
-          <input type="number" id="carbs" inputmode="decimal" placeholder="e.g. 45">
-          <span class="unit" id="u-carb">g</span>
+      <!-- photo -->
+      <div class="photo-field">
+        <label>صورة الطعام <span class="opt">(اختياري — لتقدير الكربوهيدرات)</span></label>
+        <div class="photo-actions">
+          <button type="button" class="photo-btn" id="cameraBtn">📷 التقط صورة</button>
+          <button type="button" class="photo-btn" id="galleryBtn">🖼️ اختر صورة</button>
         </div>
+        <input type="file" id="cameraInput" accept="image/*" capture="environment" hidden>
+        <input type="file" id="galleryInput" accept="image/*" hidden>
+
+        <div class="photo-preview" id="photoPreview">
+          <img id="photoImg" alt="صورة الطعام">
+          <button type="button" class="btn btn-primary" id="estimateBtn" style="margin-top:12px;">قدّر الكربوهيدرات من الصورة</button>
+          <span class="photo-remove" id="photoRemove">إزالة الصورة</span>
+        </div>
+
+        <div class="ai-est" id="aiEst"></div>
+        <div class="ai-err" id="aiErr"></div>
+
+        <p class="photo-privacy">عند الضغط على «قدّر»، تُرسَل هذه الصورة إلى خدمة ذكاء اصطناعي لتقدير الكربوهيدرات. التقدير تقريبي وقد يكون خاطئًا — راجِعه دائمًا قبل احتساب أي جرعة. الصورة لا تُرسَل ما لم تضغط «قدّر».</p>
       </div>
 
       <div class="field">
-        <label>Current blood glucose <span style="color:var(--ink-faint)">(optional)</span></label>
+        <label>الكربوهيدرات المراد تناولها <span class="opt">(اختياري)</span></label>
         <div class="inputrow">
-          <input type="number" id="bg" inputmode="decimal" placeholder="e.g. 180">
+          <input type="number" id="carbs" inputmode="decimal" placeholder="مثال: 45">
+          <span class="unit" id="u-carb">غرام</span>
+        </div>
+        <div class="ai-flag" id="carbAiFlag">⚠ هذا الرقم مُقدَّر بالذكاء الاصطناعي — راجِعه وعدّله قبل الحساب.</div>
+      </div>
+
+      <div class="field">
+        <label>سكر الدم الحالي <span class="opt">(اختياري)</span></label>
+        <div class="inputrow">
+          <input type="number" id="bg" inputmode="decimal" placeholder="مثال: 180">
           <span class="unit" id="u-bg">mg/dL</span>
         </div>
       </div>
 
       <div class="field">
-        <label>Active insulin on board (IOB) <span style="color:var(--ink-faint)">(optional)</span></label>
+        <label>الإنسولين النشط في الجسم (IOB) <span class="opt">(اختياري)</span></label>
         <div class="inputrow">
-          <input type="number" id="iob" inputmode="decimal" placeholder="e.g. 1.5">
-          <span class="unit">units</span>
+          <input type="number" id="iob" inputmode="decimal" placeholder="مثال: 1.5">
+          <span class="unit">وحدة</span>
         </div>
       </div>
 
-      <button class="btn btn-primary" id="calcBtn">Calculate estimate</button>
+      <button class="btn btn-primary" id="calcBtn">احسب التقدير</button>
 
       <div class="result" id="result">
         <div class="result-top">
-          <div class="result-label">Estimated dose</div>
-          <div class="result-num"><span id="rNum">0</span><small> units</small></div>
+          <div class="result-label">الجرعة المقدّرة</div>
+          <div class="result-num"><span id="rNum">0</span><small> وحدة</small></div>
           <div class="result-type" id="rType">—</div>
+          <div class="ai-badge" id="rAiBadge" style="display:none"></div>
         </div>
         <div class="breakdown" id="breakdown"></div>
+        <div class="hard-warn" id="hardWarn" style="display:none"></div>
         <div class="low-warn" id="lowWarn" style="display:none"></div>
-        <div class="result-note">Rounded to your configured increment. This is arithmetic only — verify before dosing.</div>
+        <div class="result-note">مقرَّبة إلى الزيادة التي ضبطتها. هذا حساب فقط — تحقّق قبل أخذ الجرعة.</div>
       </div>
-      <button class="btn btn-ghost" id="logBtn" style="display:none;margin-top:12px;">Save to log ↓</button>
+      <button class="btn btn-ghost" id="logBtn" style="display:none;margin-top:12px;">احفظ في السجلّ ↓</button>
     </div>
   </section>
 
   <!-- LOG -->
   <section id="log" style="display:none">
     <div class="card">
-      <h2>Dose history</h2>
-      <p class="hint">Saved locally on this device only. Share with your care team as a record.</p>
-      <div id="logList"><div class="empty">No entries yet.<br>Calculate an estimate and save it here.</div></div>
-      <div class="clearlog" id="clearLog" style="display:none">Clear all entries</div>
+      <h2>سجلّ الجرعات</h2>
+      <p class="hint">محفوظ محليًا على هذا الجهاز فقط. شاركه مع فريق رعايتك كسجلّ.</p>
+      <div id="logList"><div class="empty">لا توجد إدخالات بعد.<br>احسب تقديرًا واحفظه هنا.</div></div>
+      <div class="clearlog" id="clearLog" style="display:none">حذف جميع الإدخالات</div>
     </div>
   </section>
 
   <!-- SETTINGS -->
   <section id="settings" style="display:none">
     <div class="card">
-      <h2>Your parameters</h2>
-      <p class="hint">Enter the values <b>from your prescription</b>. These are the only numbers that drive the math — get them from your provider, not guesses.</p>
+      <h2>معاملاتك</h2>
+      <p class="hint">أدخل القيم <b>من وصفتك الطبية</b>. هذه هي الأرقام الوحيدة التي تقود الحساب — احصل عليها من مقدّم الرعاية، لا من التخمين.</p>
 
       <div class="field">
-        <label>Glucose units</label>
+        <label>وحدة قياس السكر</label>
         <select id="bgUnit">
-          <option value="mgdl">mg/dL (US)</option>
+          <option value="mgdl">mg/dL (الولايات المتحدة)</option>
           <option value="mmol">mmol/L</option>
         </select>
       </div>
 
       <div class="field">
-        <label>Insulin-to-carb ratio (ICR) <span class="req">— 1 unit per __ g carbs</span></label>
+        <label>نسبة الإنسولين إلى الكربوهيدرات (ICR) <span class="req">— وحدة واحدة لكل __ غرام كربوهيدرات</span></label>
         <div class="inputrow">
-          <input type="number" id="sICR" inputmode="decimal" placeholder="e.g. 10">
-          <span class="unit">g/unit</span>
+          <input type="number" id="sICR" inputmode="decimal" placeholder="مثال: 10">
+          <span class="unit">غ/وحدة</span>
         </div>
       </div>
 
       <div class="field">
-        <label>Correction factor / ISF <span class="req">— 1 unit lowers BG by __</span></label>
+        <label>معامل التصحيح / ISF <span class="req">— وحدة واحدة تخفض السكر بمقدار __</span></label>
         <div class="inputrow">
-          <input type="number" id="sISF" inputmode="decimal" placeholder="e.g. 50">
+          <input type="number" id="sISF" inputmode="decimal" placeholder="مثال: 50">
           <span class="unit" id="u-isf">mg/dL</span>
         </div>
       </div>
 
       <div class="field">
-        <label>Target blood glucose</label>
+        <label>سكر الدم المستهدف</label>
         <div class="inputrow">
-          <input type="number" id="sTarget" inputmode="decimal" placeholder="e.g. 110">
+          <input type="number" id="sTarget" inputmode="decimal" placeholder="مثال: 110">
           <span class="unit" id="u-tgt">mg/dL</span>
         </div>
       </div>
 
       <div class="two">
         <div class="field">
-          <label>Insulin type / name</label>
-          <input type="text" id="sType" placeholder="e.g. Humalog">
+          <label>نوع/اسم الإنسولين</label>
+          <input type="text" id="sType" placeholder="مثال: هيومالوج">
         </div>
         <div class="field">
-          <label>Round to</label>
+          <label>التقريب إلى</label>
           <select id="sRound">
-            <option value="0.5">0.5 unit</option>
-            <option value="1">1 unit</option>
-            <option value="0.1">0.1 unit</option>
+            <option value="0.5">0.5 وحدة</option>
+            <option value="1">1 وحدة</option>
+            <option value="0.1">0.1 وحدة</option>
           </select>
         </div>
       </div>
 
       <div class="field">
-        <label>Only correct above this BG <span style="color:var(--ink-faint)">(optional)</span></label>
+        <label>صحّح فقط فوق هذا المستوى من السكر <span class="opt">(اختياري)</span></label>
         <div class="inputrow">
-          <input type="number" id="sCorrThresh" inputmode="decimal" placeholder="e.g. 150">
+          <input type="number" id="sCorrThresh" inputmode="decimal" placeholder="مثال: 150">
           <span class="unit" id="u-ct">mg/dL</span>
         </div>
       </div>
 
-      <button class="btn btn-primary" id="saveSettings">Save parameters</button>
-      <div class="settings-saved" id="savedMsg">✓ Saved on this device</div>
+      <button class="btn btn-primary" id="saveSettings">احفظ المعاملات</button>
+      <div class="settings-saved" id="savedMsg">✓ تم الحفظ على هذا الجهاز</div>
     </div>
   </section>
 
   <footer>
-    Data stays in this browser only. Nothing is uploaded.<br>
-    Built as a personal logging aid — not a medical device.
+    تبقى بياناتك (السجلّ والإعدادات) على هذا الجهاز. تُرفَع صور الطعام إلى خدمة الذكاء الاصطناعي فقط عند استخدامك ميزة التقدير.<br>
+    صُمّم كأداة تسجيل شخصية — وليس جهازًا طبيًا.
   </footer>
 </div>
 
@@ -292,8 +359,24 @@
   };
   var logEntries = [];
   var lastCalc = null;
+  var photoDataUrl = null;   // downscaled food photo (data URL) for the current calc
+  var aiCarb = null;         // {grams, confidence, accepted} when the carbs field came from the AI; null when manual
 
   var $ = function(id){return document.getElementById(id);};
+
+  // bidi-safe LTR wrapper for math/formula fragments rendered inside the RTL UI
+  function ltr(s){ return '<span dir="ltr" style="unicode-bidi:isolate;">'+s+'</span>'; }
+
+  // clear the "AI-estimated" state on the carbs field (called when the user types manually)
+  function clearAiCarb(){
+    aiCarb = null;
+    $('carbs').classList.remove('needs-review');
+    $('carbAiFlag').classList.remove('show');
+  }
+  $('carbs').addEventListener('input', function(){
+    // a manual edit after an AI fill means the human took ownership of the number
+    if(aiCarb && String(aiCarb.grams) !== this.value){ clearAiCarb(); }
+  });
 
   // ---- tabs ----
   var tabs = document.querySelectorAll('.tab');
@@ -341,11 +424,126 @@
     setTimeout(function(){ m.classList.remove('show'); }, 1800);
   });
 
+  // ---- photo capture + downscale ----
+  function handleFile(file){
+    if(!file) return;
+    var reader = new FileReader();
+    reader.onload = function(ev){
+      var img = new Image();
+      img.onload = function(){
+        // downscale so the longest edge is <= 768px, re-encode as JPEG q0.8
+        var max = 768;
+        var w = img.width, h = img.height;
+        if(w > h && w > max){ h = Math.round(h*max/w); w = max; }
+        else if(h >= w && h > max){ w = Math.round(w*max/h); h = max; }
+        var canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        photoDataUrl = canvas.toDataURL('image/jpeg', 0.8);
+        $('photoImg').src = photoDataUrl;
+        $('photoPreview').classList.add('show');
+        $('aiEst').classList.remove('show');
+        $('aiErr').classList.remove('show');
+      };
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+  $('cameraBtn').addEventListener('click', function(){ $('cameraInput').click(); });
+  $('galleryBtn').addEventListener('click', function(){ $('galleryInput').click(); });
+  $('cameraInput').addEventListener('change', function(){ handleFile(this.files[0]); this.value=''; });
+  $('galleryInput').addEventListener('change', function(){ handleFile(this.files[0]); this.value=''; });
+  $('photoRemove').addEventListener('click', function(){
+    photoDataUrl = null;
+    clearAiCarb();
+    $('photoImg').src = '';
+    $('photoPreview').classList.remove('show');
+    $('aiEst').classList.remove('show');
+    $('aiErr').classList.remove('show');
+  });
+
+  // fill the carbs field from an AI estimate and mark it as needing human review
+  function applyAiCarb(g){
+    var f = $('carbs');
+    f.value = g;
+    f.classList.add('needs-review');
+    $('carbAiFlag').classList.add('show');
+    if(aiCarb) aiCarb.accepted = true;
+  }
+
+  // ---- AI carb estimate from photo ----
+  $('estimateBtn').addEventListener('click', function(){
+    if(!photoDataUrl) return;
+    var btn = this;
+    var est = $('aiEst'), err = $('aiErr');
+    err.classList.remove('show');
+    btn.disabled = true;
+    var original = btn.textContent;
+    btn.textContent = 'جارٍ التحليل…';
+
+    fetch('/api/estimate', {
+      method:'POST',
+      headers:{'content-type':'application/json'},
+      body: JSON.stringify({ image: photoDataUrl })
+    })
+    .then(function(r){ return r.json().then(function(j){ return {ok:r.ok, status:r.status, j:j}; }); })
+    .then(function(res){
+      if(!res.ok || !res.j || typeof res.j.grams !== 'number'){
+        var msg = (res.j && res.j.message) ? res.j.message
+                : 'تعذّر تقدير الكربوهيدرات. أدخل الرقم يدويًا.';
+        err.textContent = '⚠ ' + msg;
+        err.classList.add('show');
+        return;
+      }
+      var g = res.j.grams;
+      var items = Array.isArray(res.j.items) && res.j.items.length ? res.j.items.join('، ') : '';
+
+      // No food recognised: do NOT pre-fill a misleading 0 g — tell the user to enter manually.
+      if(g === 0 && !items){
+        clearAiCarb();
+        err.textContent = '⚠ لم يتم التعرّف على طعام واضح في الصورة. أدخل الكربوهيدرات يدويًا.';
+        err.classList.add('show');
+        return;
+      }
+
+      var conf = ({low:'منخفضة', medium:'متوسطة', high:'عالية'})[res.j.confidence] || '—';
+      aiCarb = { grams:g, confidence:res.j.confidence, accepted:false };
+
+      // Low confidence creates friction: do NOT auto-fill — require an explicit tap to accept.
+      var lowConf = (res.j.confidence === 'low');
+      var html = '<b>تقدير الذكاء الاصطناعي: ~' + g + ' غرام</b> (ثقة: ' + conf + ')'
+               + (items ? '<br>العناصر: ' + items : '')
+               + '<span class="verify">⚠ هذا تقدير آلي تقريبي. تأكّد من الرقم بنفسك قبل احتساب الجرعة، وعدّله إذا لزم.</span>';
+
+      if(lowConf){
+        html += '<button type="button" class="btn btn-primary accept" id="acceptEst">الثقة منخفضة — استخدم ' + g + ' غرام على أي حال</button>';
+        est.innerHTML = html;
+        est.classList.add('show');
+        $('acceptEst').addEventListener('click', function(){
+          applyAiCarb(g);
+          this.disabled = true;
+          this.textContent = '✓ تم إدخال ' + g + ' غرام';
+        });
+      } else {
+        applyAiCarb(g);  // medium/high: pre-fill the editable field, flagged for review
+        est.innerHTML = html;
+        est.classList.add('show');
+      }
+    })
+    .catch(function(){
+      err.textContent = '⚠ تعذّر الاتصال بخدمة التقدير. تحقّق من اتصالك وأدخل الرقم يدويًا.';
+      err.classList.add('show');
+    })
+    .finally(function(){
+      btn.disabled = false;
+      btn.textContent = original;
+    });
+  });
+
   // ---- rounding ----
   function roundDose(d){
     var step = S.round;
     var r = Math.round(d/step)*step;
-    // tidy float
     return Math.round(r*100)/100;
   }
 
@@ -359,7 +557,7 @@
     if(isNaN(iob)) iob = 0;
 
     if(carbs===null && bg===null){
-      alert('Enter carbs, a blood glucose reading, or both.');
+      alert('أدخل الكربوهيدرات أو قراءة سكر الدم أو كليهما.');
       return;
     }
 
@@ -369,31 +567,31 @@
 
     // carb coverage
     if(carbs!==null){
-      if(!S.icr){ missing.push('insulin-to-carb ratio'); }
+      if(!S.icr){ missing.push('نسبة الإنسولين إلى الكربوهيدرات'); }
       else {
         carbDose = carbs / S.icr;
-        rows.push({label:'Carb coverage ('+carbs+'g ÷ '+S.icr+')', v:'+'+carbDose.toFixed(2)+' u'});
+        rows.push({label:'تغطية الكربوهيدرات '+ltr(carbs+' غ ÷ '+S.icr), v:'+'+carbDose.toFixed(2)+' وحدة'});
       }
     }
 
     // correction
     if(bg!==null){
-      if(S.target===null){ missing.push('target BG'); }
-      else if(!S.isf){ missing.push('correction factor'); }
+      if(S.target===null){ missing.push('السكر المستهدف'); }
+      else if(!S.isf){ missing.push('معامل التصحيح'); }
       else {
         var doCorrect = true;
         if(S.corrThresh!==null && bg < S.corrThresh){ doCorrect = false; }
         if(doCorrect){
           corrDose = (bg - S.target) / S.isf;
-          rows.push({label:'Correction (('+bg+' − '+S.target+') ÷ '+S.isf+')', v:(corrDose>=0?'+':'')+corrDose.toFixed(2)+' u'});
+          rows.push({label:'التصحيح '+ltr('('+bg+' − '+S.target+') ÷ '+S.isf), v:(corrDose>=0?'+':'')+corrDose.toFixed(2)+' وحدة'});
         } else {
-          rows.push({label:'Correction (BG below '+S.corrThresh+' threshold)', v:'+0.00 u'});
+          rows.push({label:'التصحيح (السكر أقل من عتبة '+ltr(S.corrThresh)+')', v:'+0.00 وحدة'});
         }
       }
     }
 
     if(missing.length){
-      alert('Set your '+missing.join(' and ')+' in Settings first.');
+      alert('اضبط '+missing.join(' و')+' في الإعدادات أولًا.');
       tabs.forEach(function(x){x.classList.remove('active');});
       document.querySelector('[data-tab=settings]').classList.add('active');
       for(var k in secs){ secs[k].style.display = (k==='settings')?'block':'none'; }
@@ -401,36 +599,64 @@
     }
 
     var subtotal = carbDose + corrDose;
-    var iobApplied = Math.min(iob, Math.max(subtotal,0)); // don't subtract below sensible floor on display
     if(iob>0){
-      rows.push({label:'Insulin on board', v:'−'+iob.toFixed(2)+' u', neg:true});
+      rows.push({label:'الإنسولين النشط في الجسم', v:'−'+iob.toFixed(2)+' وحدة', neg:true});
     }
 
     var raw = subtotal - iob;
     var dose = roundDose(raw);
     if(dose < 0) dose = 0;
 
-    // render breakdown
+    // render breakdown — value pill keeps the number LTR-isolated, unit stays outside it
     var html = '';
     rows.forEach(function(r){
-      html += '<div class="brk-row '+(r.neg?'neg':'')+'"><span>'+r.label+'</span><span class="v">'+r.v+'</span></div>';
+      var parts = r.v.split(' ');
+      var num = parts.shift();
+      var unit = parts.join(' ');
+      html += '<div class="brk-row '+(r.neg?'neg':'')+'"><span>'+r.label+'</span>'
+            + '<span class="v">'+ltr(num)+' '+unit+'</span></div>';
     });
-    html += '<div class="brk-row total"><span>Estimated total</span><span class="v">'+dose.toFixed(2)+' u</span></div>';
+    html += '<div class="brk-row total"><span>الإجمالي المقدَّر</span><span class="v">'+ltr(dose.toFixed(2))+' وحدة</span></div>';
     $('breakdown').innerHTML = html;
 
     $('rNum').textContent = dose.toFixed(dose%1===0?0:2);
-    $('rType').textContent = S.type ? S.type : 'insulin';
+    $('rType').textContent = S.type ? S.type : 'إنسولين';
     $('result').classList.add('show');
     $('logBtn').style.display = 'block';
+
+    // was this dose driven by an AI carb estimate the user did not override?
+    var aiUsed = !!(aiCarb && carbs!==null && Number(aiCarb.grams) === carbs);
+
+    // AI-estimate badge travels onto the result panel
+    var rb = $('rAiBadge');
+    if(aiUsed){
+      var cTxt = ({low:'منخفضة', medium:'متوسطة', high:'عالية'})[aiCarb.confidence] || '—';
+      rb.textContent = '⚠ كربوهيدرات مُقدَّرة بالذكاء الاصطناعي · ثقة ' + cTxt;
+      rb.style.display='inline-block';
+    } else { rb.style.display='none'; }
+
+    // hard safety gate: implausibly large carb intake or resulting dose
+    var hw = $('hardWarn');
+    var hardMsgs = [];
+    if(carbs!==null && carbs > 250){
+      hardMsgs.push('كمية الكربوهيدرات ('+carbs+' غ) كبيرة بشكل غير معتاد لوجبة واحدة. تأكّد من الرقم'+(aiUsed?' (وهو تقدير آلي)':'')+' قبل المتابعة.');
+    }
+    if(dose >= 25){
+      hardMsgs.push('الجرعة المقدّرة ('+dose.toFixed(2)+' وحدة) كبيرة. راجِعها بعناية مع خطتك قبل أخذ أي شيء.');
+    }
+    if(hardMsgs.length){
+      hw.innerHTML = '⛔ '+hardMsgs.join('<br><br>⛔ ');
+      hw.style.display='block';
+    } else { hw.style.display='none'; }
 
     // low / negative warnings
     var lw = $('lowWarn');
     var warnMsgs = [];
     if(bg!==null && S.target!==null && bg < S.target){
-      warnMsgs.push('Your BG ('+bg+') is below target. A correction here is negative — double-check whether you should be dosing at all.');
+      warnMsgs.push('سكر دمك ('+bg+') أقل من المستهدف. التصحيح هنا سالب — تحقّق جيدًا مما إذا كان عليك أخذ جرعة أصلًا.');
     }
     if(raw < 0){
-      warnMsgs.push('Active insulin exceeds the calculated need. Estimate floored at 0 — consult your plan before taking anything.');
+      warnMsgs.push('الإنسولين النشط يتجاوز الحاجة المحسوبة. حُدِّد التقدير عند صفر — راجع خطتك قبل أخذ أي شيء.');
     }
     if(warnMsgs.length){
       lw.innerHTML = '⚠ '+warnMsgs.join('<br><br>⚠ ');
@@ -438,8 +664,9 @@
     } else { lw.style.display='none'; }
 
     lastCalc = {
-      dose:dose, type:S.type||'insulin', carbs:carbs, bg:bg, iob:iob,
-      bgUnit:unitStr(),
+      dose:dose, type:S.type||'إنسولين', carbs:carbs, bg:bg, iob:iob,
+      bgUnit:unitStr(), photo:photoDataUrl,
+      aiCarb: aiUsed ? {grams:aiCarb.grams, confidence:aiCarb.confidence} : null,
       ts:new Date()
     };
   });
@@ -448,20 +675,27 @@
   function renderLog(){
     var list = $('logList');
     if(!logEntries.length){
-      list.innerHTML = '<div class="empty">No entries yet.<br>Calculate an estimate and save it here.</div>';
+      list.innerHTML = '<div class="empty">لا توجد إدخالات بعد.<br>احسب تقديرًا واحفظه هنا.</div>';
       $('clearLog').style.display='none';
       return;
     }
     var html = '';
     logEntries.slice().reverse().forEach(function(e){
       var parts = [];
-      if(e.carbs!==null) parts.push(e.carbs+'g carbs');
-      if(e.bg!==null) parts.push('BG '+e.bg+' '+e.bgUnit);
-      if(e.iob>0) parts.push('IOB '+e.iob+'u');
+      if(e.carbs!==null) parts.push(e.carbs+' غ كربوهيدرات');
+      if(e.bg!==null) parts.push('سكر '+e.bg+' '+e.bgUnit);
+      if(e.iob>0) parts.push('إنسولين نشط '+e.iob+' وحدة');
       var t = e.ts;
-      var time = t.toLocaleString([], {month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
-      html += '<div class="logitem"><div class="lt"><span class="dose">'+e.dose.toFixed(e.dose%1===0?0:2)+' u</span><span class="time">'+time+'</span></div>'
-            + '<div class="meta">'+e.type+(parts.length?' · '+parts.join(' · '):'')+'</div></div>';
+      var time = t.toLocaleString('ar-u-nu-latn', {month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+      var aiBadge = e.aiCarb
+        ? '<span class="ai-badge">⚠ كربوهيدرات مُقدَّرة بالذكاء الاصطناعي · ثقة '
+          + (({low:'منخفضة', medium:'متوسطة', high:'عالية'})[e.aiCarb.confidence]||'—') + '</span>'
+        : '';
+      html += '<div class="logitem"><div class="lt"><span class="dose">'+ltr(e.dose.toFixed(e.dose%1===0?0:2))+' وحدة</span><span class="time">'+time+'</span></div>'
+            + '<div class="meta">'+e.type+(parts.length?' · '+parts.join(' · '):'')+'</div>'
+            + (aiBadge ? '<div>'+aiBadge+'</div>' : '')
+            + (e.photo ? '<img class="thumb" src="'+e.photo+'" alt="صورة الطعام">' : '')
+            + '</div>';
     });
     list.innerHTML = html;
     $('clearLog').style.display='block';
@@ -478,9 +712,16 @@
     $('logBtn').style.display='none';
     $('result').classList.remove('show');
     $('carbs').value=''; $('bg').value=''; $('iob').value='';
+    // reset photo + AI state for the next entry
+    photoDataUrl = null;
+    clearAiCarb();
+    $('photoImg').src = '';
+    $('photoPreview').classList.remove('show');
+    $('aiEst').classList.remove('show');
+    $('aiErr').classList.remove('show');
   });
   $('clearLog').addEventListener('click', function(){
-    if(confirm('Delete all log entries?')){ logEntries=[]; renderLog(); }
+    if(confirm('حذف جميع إدخالات السجلّ؟')){ logEntries=[]; renderLog(); }
   });
 
   // init
