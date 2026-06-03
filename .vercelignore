@@ -1,5 +1,4 @@
-.DS_Store
-*.log
-.vercel
 node_modules
 dom_test.js
+*.log
+.DS_Store
